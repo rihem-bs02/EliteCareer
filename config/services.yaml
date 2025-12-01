@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+
+parameters:
+  jwt.secret: '%env(JWT_SECRET)%'
+  jwt.issuer: '%env(JWT_ISSUER)%'
+  jwt.audience: '%env(JWT_AUDIENCE)%'
+  jwt.access_ttl: '%env(int:JWT_ACCESS_TTL_SECONDS)%'
+  jwt.refresh_ttl_days: '%env(int:JWT_REFRESH_TTL_DAYS)%'
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  App\:
+    resource: '../src/'
+    exclude:
+      - '../src/DependencyInjection/'
+      - '../src/Entity/'
+      - '../src/Kernel.php'
+
+  App\Security\JwtService:
+    arguments:
+      $secret: '%jwt.secret%'
+      $issuer: '%jwt.issuer%'
+      $audience: '%jwt.audience%'
+      $accessTtlSeconds: '%jwt.access_ttl%'
+
+  App\Security\RefreshTokenService:
+    arguments:
+      $refreshTtlDays: '%jwt.refresh_ttl_days%'

@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>EliteCareer | Login</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --primary-light: #93c5fd;
+      --secondary: #8b5cf6;
+      --accent: #ec4899;
+      --dark: #1e293b;
+      --darker: #0f172a;
+      --light: #f8fafc;
+      --lighter: #ffffff;
+      --gray: #64748b;
+      --gray-light: #e2e8f0;
+      --gray-lighter: #f1f5f9;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --radius: 12px;
+      --radius-lg: 16px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+      --transition: all 0.3s ease;
+      --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Inter',sans-serif;
+      color:var(--dark);
+      line-height:1.6;
+      background:var(--light);
+      overflow-x:hidden;
+    }
+    a{text-decoration:none;color:inherit}
+    input,button{font-family:inherit}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:14px 32px;background:var(--gradient);color:#fff;border-radius:var(--radius);
+      font-weight:600;transition:var(--transition);border:none;cursor:pointer;font-size:16px;
+      position:relative;overflow:hidden;z-index:1;
+    }
+    .btn::before{
+      content:'';position:absolute;top:0;left:0;width:0%;height:100%;
+      background:linear-gradient(135deg,var(--primary-dark),var(--secondary));
+      transition:var(--transition);z-index:-1;
+    }
+    .btn:hover::before{width:100%}
+    .btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+    .btn-secondary{
+      background:transparent;color:var(--primary);border:2px solid var(--primary-light);
+    }
+    .btn-secondary::before{display:none}
+    .btn-secondary:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+    /* =========================
+       AUTH (Login/Register) UI
+       ========================= */
+
+    .auth-body{
+      min-height:100vh;
+      background: var(--light);
+      position: relative;
+      overflow-x:hidden;
+    }
+
+    .auth-shell{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 28px;
+      align-items: center;
+      padding: 110px 20px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-card{
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--gray-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .auth-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(900px 400px at -10% -10%, rgba(59,130,246,0.16), transparent 55%),
+        radial-gradient(700px 350px at 110% 0%, rgba(139,92,246,0.18), transparent 60%),
+        radial-gradient(600px 300px at 45% 110%, rgba(236,72,153,0.10), transparent 55%);
+      pointer-events:none;
+    }
+
+    .auth-header{
+      padding: 34px 34px 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom: 18px;
+    }
+
+    .auth-brand-icon{
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--gradient);
+      color: #fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow: var(--shadow);
+      flex: 0 0 auto;
+    }
+
+    .auth-brand-text{
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--darker);
+      letter-spacing: 0.2px;
+    }
+
+    .auth-title{
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 32px;
+      line-height: 1.15;
+      margin-bottom: 8px;
+      color: var(--darker);
+    }
+
+    .auth-subtitle{
+      color: var(--gray);
+      font-size: 15px;
+      max-width: 52ch;
+    }
+
+    .auth-form{
+      padding: 0 34px 34px;
+      position: relative;
+      z-index: 1;
+      display:flex;
+      flex-direction:column;
+      gap: 14px;
+    }
+
+    .auth-field{display:flex;flex-direction:column;gap:8px}
+
+    .auth-label-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+
+    .auth-label{
+      font-weight: 600;
+      color: var(--darker);
+      font-size: 14px;
+    }
+
+    .auth-link{
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 13px;
+      transition: var(--transition);
+    }
+
+    .auth-link:hover{
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+
+    .auth-input{
+      width:100%;
+      padding: 14px 14px;
+      border: 1px solid var(--gray-light);
+      border-radius: var(--radius);
+      background: rgba(248,250,252,0.9);
+      outline: none;
+      transition: var(--transition);
+      color: var(--darker);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+
+    .auth-input:focus{
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 4px rgba(59,130,246,0.18);
+      background: #fff;
+    }
+
+    .auth-input::placeholder{color: rgba(100,116,139,0.75)}
+
+    .auth-submit{width:100%;margin-top:8px}
+
+    .auth-divider{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      margin: 8px 0 0;
+      color: rgba(100,116,139,0.8);
+      font-size: 13px;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after{
+      content:"";
+      height:1px;
+      background: var(--gray-light);
+      flex:1;
+    }
+
+    .auth-secondary{width:100%}
+
+    .auth-alert{
+      margin: 0 34px 12px;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      border: 1px solid;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-alert-title{font-weight:700;font-size:13px;margin-bottom:2px}
+    .auth-alert-text{font-size:13px;color: rgba(15,23,42,0.8)}
+
+    .auth-alert--error{
+      background: rgba(239,68,68,0.08);
+      border-color: rgba(239,68,68,0.22);
+    }
+    .auth-alert--error .auth-alert-title{color: var(--error)}
+
+    .auth-alert--success{
+      background: rgba(16,185,129,0.10);
+      border-color: rgba(16,185,129,0.25);
+    }
+    .auth-alert--success .auth-alert-title{color: var(--success)}
+
+    .auth-aside{
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      background: linear-gradient(135deg, rgba(37,99,235,0.92), rgba(139,92,246,0.90));
+    }
+
+    .auth-aside::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(700px 360px at 20% 20%, rgba(255,255,255,0.18), transparent 55%),
+        radial-gradient(650px 350px at 85% 30%, rgba(236,72,153,0.12), transparent 60%),
+        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%23ffffff' fill-opacity='0.06' fill-rule='evenodd'/%3E%3C/svg%3E");
+      pointer-events:none;
+    }
+
+    .auth-aside-inner{
+      position: relative;
+      z-index: 1;
+      padding: 38px;
+      color: #fff;
+      display:flex;
+      flex-direction:column;
+      min-height: 520px;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .auth-aside-pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      width: fit-content;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(8px);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .auth-aside-title{
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 34px;
+      line-height: 1.12;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.20);
+      margin-top: 6px;
+    }
+
+    .auth-aside-text{opacity:0.9;max-width:46ch}
+
+    .auth-bullets{
+      margin-top: 10px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .auth-bullets li{
+      display:flex;
+      gap: 10px;
+      align-items:flex-start;
+      opacity: 0.95;
+    }
+
+    .auth-bullets li i{margin-top:2px;color: rgba(255,255,255,0.95)}
+
+    .auth-wave{
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 180px;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        url("data:image/svg+xml,%3Csvg width='1440' height='260' viewBox='0 0 1440 260' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23ffffff' d='M0 164C160 214 320 234 480 218C640 202 800 148 960 120C1120 92 1280 90 1440 120V260H0V164Z'/%3E%3C/svg%3E")
+        center bottom / cover no-repeat;
+      opacity: 1;
+    }
+
+    @media (max-width: 992px){
+      .auth-shell{grid-template-columns:1fr;padding-top:90px}
+      .auth-aside{order:-1}
+      .auth-aside-inner{min-height:auto;padding:30px}
+    }
+
+    @media (max-width: 576px){
+      .auth-header{padding:26px 22px 14px}
+      .auth-form{padding:0 22px 26px}
+      .auth-alert{margin:0 22px 10px}
+      .auth-title{font-size:28px}
+    }
+  </style>
+</head>
+
+<body class="auth-body">
+  <main class="auth-shell">
+    <section class="auth-card">
+      <header class="auth-header">
+        <a href="/" class="auth-brand">
+          <span class="auth-brand-icon"><i class="fas fa-briefcase"></i></span>
+          <span class="auth-brand-text">EliteCareer</span>
+        </a>
+
+        <h1 class="auth-title">Welcome back</h1>
+        <p class="auth-subtitle">Sign in to manage your applications and discover new opportunities.</p>
+      </header>
+
+      {% if error is defined and error %}
+        <div class="auth-alert auth-alert--error">
+          <div class="auth-alert-title">Login failed</div>
+          <div class="auth-alert-text">{{ error }}</div>
+        </div>
+      {% endif %}
+
+      {% for msg in app.flashes('success') %}
+        <div class="auth-alert auth-alert--success">
+          <div class="auth-alert-title">Success</div>
+          <div class="auth-alert-text">{{ msg }}</div>
+        </div>
+      {% endfor %}
+
+      <form class="auth-form" method="post" action="/login">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+
+        <div class="auth-field">
+          <div class="auth-label-row">
+            <label class="auth-label" for="email">Email</label>
+          </div>
+          <input id="email" class="auth-input" name="email" type="email" placeholder="name@example.com" required autocomplete="email">
+        </div>
+
+        <div class="auth-field">
+          <div class="auth-label-row">
+            <label class="auth-label" for="password">Password</label>
+            <a class="auth-link" href="#">Forgot password?</a>
+          </div>
+          <input id="password" class="auth-input" name="password" type="password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+
+        <button class="btn auth-submit" type="submit">
+          <i class="fas fa-right-to-bracket"></i>
+          Sign in
+        </button>
+
+        <div class="auth-divider">or</div>
+
+        <a class="btn btn-secondary auth-secondary" href="/register">
+          <i class="fas fa-user-plus"></i>
+          Create an account
+        </a>
+      </form>
+    </section>
+
+    <aside class="auth-aside">
+      <div class="auth-aside-inner">
+        <div class="auth-aside-pill">
+          <i class="fas fa-shield-heart"></i>
+          Secure • Fast • Premium
+        </div>
+
+        <h2 class="auth-aside-title">Find your next job faster.</h2>
+        <p class="auth-aside-text">
+          Verified employers, curated listings, and a smooth application experience — designed for professionals.
+        </p>
+
+        <ul class="auth-bullets">
+          <li><i class="fas fa-circle-check"></i><span>Save jobs and apply in minutes</span></li>
+          <li><i class="fas fa-circle-check"></i><span>Trusted companies & quality offers</span></li>
+          <li><i class="fas fa-circle-check"></i><span>Personalized matches for your profile</span></li>
+        </ul>
+      </div>
+      <div class="auth-wave" aria-hidden="true"></div>
+    </aside>
+  </main>
+</body>
+</html>
+

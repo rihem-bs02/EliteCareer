@@ -1,0 +1,487 @@
+{# templates/web/dashboard.html.twig #}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard | EliteCareer</title>
+
+  {# Keep your global CSS if you already have it #}
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/styles.css">
+
+  <style>
+    /* =========================
+       DASHBOARD UI (minimal)
+       ========================= */
+    .dash-body{ background: var(--light); min-height: 100vh; padding-top: 110px; }
+    .dash-header{ display:flex; align-items:flex-start; justify-content:space-between; gap:18px; margin-bottom: 22px; }
+    .dash-title{ font-size: 34px; line-height:1.1; color: var(--darker); margin:0; }
+    .dash-sub{ color: var(--gray); margin-top:8px; max-width: 70ch; }
+    .dash-actions{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:flex-end; }
+
+    .dash-grid{ display:grid; grid-template-columns: 1fr; gap: 18px; margin-top: 18px; }
+    .dash-row{ display:grid; grid-template-columns: 1fr; gap: 18px; }
+    @media (min-width: 992px){
+      .dash-row{ grid-template-columns: 1.25fr 0.75fr; align-items:start; }
+    }
+
+    .dash-card{
+      background: #fff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-light);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .dash-card-head{
+      padding: 18px 18px 14px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      border-bottom: 1px solid var(--gray-light);
+      background: linear-gradient(180deg, rgba(59,130,246,0.06), transparent);
+    }
+    .dash-card-title{
+      margin:0;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--darker);
+      letter-spacing: .2px;
+      display:flex; align-items:center; gap:10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .dash-card-body{ padding: 18px; }
+
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--gray-light);
+      background: var(--gray-lighter);
+      color: var(--darker);
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .pill i{ color: var(--primary); }
+
+    .muted{ color: var(--gray); }
+    .kpi-grid{
+      display:grid; gap: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    @media (min-width: 768px){
+      .kpi-grid{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    .kpi{
+      padding: 14px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-light);
+      background: rgba(248,250,252,0.8);
+    }
+    .kpi-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .kpi-label{ font-size: 13px; color: var(--gray); font-weight: 600; }
+    .kpi-icon{
+      width: 38px; height: 38px; border-radius: 12px;
+      display:flex; align-items:center; justify-content:center;
+      background: rgba(59,130,246,0.12);
+      color: var(--primary);
+    }
+    .kpi-value{ margin-top: 8px; font-size: 22px; font-weight: 900; color: var(--darker); }
+
+    .list{ display:flex; flex-direction:column; gap: 12px; }
+    .item{
+      padding: 14px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-light);
+      background: #fff;
+      display:flex; gap: 12px; align-items:flex-start; justify-content:space-between;
+    }
+    .item-left{ display:flex; gap: 12px; align-items:flex-start; }
+    .item-icon{
+      width: 44px; height: 44px; border-radius: 14px;
+      display:flex; align-items:center; justify-content:center;
+      background: rgba(139,92,246,0.12);
+      color: var(--secondary);
+      flex: 0 0 auto;
+    }
+    .item-title{ margin:0; font-weight: 900; color: var(--darker); }
+    .item-meta{ margin-top: 4px; font-size: 13px; color: var(--gray); }
+    .item-actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+
+    .alert{
+      border-radius: var(--radius-lg);
+      padding: 12px 14px;
+      border: 1px solid var(--gray-light);
+      background: rgba(59,130,246,0.06);
+      color: var(--darker);
+    }
+
+    .logout-form{ margin:0; }
+    .logout-form button{ width: 100%; }
+    @media (min-width: 992px){
+      .logout-form button{ width: auto; }
+    }
+  </style>
+</head>
+
+<body class="dash-body">
+
+{# If you already have your global fixed header, it will show.
+   If not, you can drop your existing header markup here. #}
+
+<main class="container">
+  {% if user %}
+    {% set roles = user.roles|default([]) %}
+    {% set isAdmin = 'ROLE_ADMIN' in roles %}
+    {% set isHR = 'ROLE_HR' in roles %}
+    {% set isCandidate = 'ROLE_CANDIDATE' in roles %}
+
+    <div class="dash-header">
+      <div>
+        <h1 class="dash-title">
+          <i class="fa-solid fa-gauge-high" style="margin-right:10px;color:var(--primary)"></i>
+          Dashboard
+        </h1>
+        <p class="dash-sub">
+          Welcome back, <b>{{ user.email }}</b>.
+          {% if isAdmin %}You have <b>Admin</b> access.{% elseif isHR %}You have <b>Employer/HR</b> access.{% else %}You have <b>Candidate</b> access.{% endif %}
+        </p>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+          <span class="pill"><i class="fa-solid fa-user-shield"></i> {{ roles|join(', ') }}</span>
+          <span class="pill"><i class="fa-solid fa-circle-check"></i> Status: {{ user.status|default('ACTIVE') }}</span>
+          {% if user.lastLoginAt %}
+            <span class="pill"><i class="fa-solid fa-clock"></i> Last login: {{ user.lastLoginAt|date('Y-m-d H:i') }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="dash-actions">
+        {% if isCandidate %}
+          <a class="btn" href="/jobs"><i class="fa-solid fa-magnifying-glass"></i> Browse Jobs</a>
+          <a class="btn btn-secondary" href="/candidate/profile"><i class="fa-solid fa-id-card"></i> My Profile</a>
+        {% elseif isHR %}
+          <a class="btn" href="/jobs/new"><i class="fa-solid fa-plus"></i> Post a Job</a>
+          <a class="btn btn-secondary" href="/employer/jobs"><i class="fa-solid fa-briefcase"></i> My Jobs</a>
+        {% elseif isAdmin %}
+          <a class="btn" href="/admin"><i class="fa-solid fa-screwdriver-wrench"></i> Admin Panel</a>
+          <a class="btn btn-secondary" href="/admin/users"><i class="fa-solid fa-users"></i> Manage Users</a>
+        {% endif %}
+
+        <form class="logout-form" method="post" action="/logout">
+          <button class="btn btn-accent" type="submit"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+
+      {# KPIs / quick stats #}
+      <div class="dash-card">
+        <div class="dash-card-head">
+          <h2 class="dash-card-title"><i class="fa-solid fa-chart-line"></i> Overview</h2>
+          <span class="muted" style="font-size:13px">Updated: {{ "now"|date("Y-m-d H:i") }}</span>
+        </div>
+        <div class="dash-card-body">
+          <div class="kpi-grid">
+            {% if isCandidate %}
+              <div class="kpi">
+                <div class="kpi-top"><div class="kpi-label">Resumes</div><div class="kpi-icon"><i class="fa-solid fa-file-lines"></i></div></div>
+                <div class="kpi-value">{{ user.resumes is defined ? user.resumes|length : 0 }}</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-top"><div class="kpi-label">Applications</div><div class="kpi-icon"><i class="fa-solid fa-paper-plane"></i></div></div>
+                <div class="kpi-value">{{ user.applications is defined ? user.applications|length : 0 }}</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-top"><div class="kpi-label">Profile</div><div class="kpi-icon"><i class="fa-solid fa-user"></i></div></div>
+                <div class="kpi-value">{{ user.candidateProfile ? 'Ready' : 'Missing' }}</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-top"><div class="kpi-label">Account</div><div class="kpi-icon"><i class="fa-solid fa-shield-halved"></i></div></div>
+                <div class="kpi-value">Secure</div>
+              </div>
+            {% elseif isHR %}
+              <div class="kpi">
+                <div class="kpi-top"><div class="kpi-label">Company memberships</div><div class="kpi-icon"><i class="fa-solid fa-building"></i></div></div>
+                <div class="kpi-value">{{ user.companyMemberships is defined ? user.companyMemberships|length : 0 }}</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-top"><div class="kpi-label">Jobs posted</div><div class="kpi-icon"><i class="fa-solid fa-briefcase"></i></div></div>
+                <div class="kpi-value">{{ user.postedJobs is defined ? user.postedJobs|length : 0 }}</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-top"><div class="kpi-label">Applicants</div><div class="kpi-icon"><i class="fa-solid fa-users"></i></div></div>
+                <div class="kpi-value">—</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-top"><div class="kpi-label">Pipeline</div><div class="kpi-icon"><i class="fa-solid fa-diagram-project"></i></div></div>
+                <div class="kpi-value">Active</div>
+              </div>
+            {% elseif isAdmin %}
+              <div class="kpi">
+                <div class="kpi-top"><div class="kpi-label">Users</div><div class="kpi-icon"><i class="fa-solid fa-users"></i></div></div>
+                <div class="kpi-value">—</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-top"><div class="kpi-label">Companies</div><div class="kpi-icon"><i class="fa-solid fa-building"></i></div></div>
+                <div class="kpi-value">—</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-top"><div class="kpi-label">Jobs</div><div class="kpi-icon"><i class="fa-solid fa-briefcase"></i></div></div>
+                <div class="kpi-value">—</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-top"><div class="kpi-label">System</div><div class="kpi-icon"><i class="fa-solid fa-server"></i></div></div>
+                <div class="kpi-value">OK</div>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="alert" style="margin-top:14px">
+            <i class="fa-solid fa-circle-info" style="margin-right:8px;color:var(--primary)"></i>
+            Tip: Keep your profile up to date to get better matches and faster applications.
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-row">
+        {# Primary role-specific panel #}
+        <div class="dash-card">
+          <div class="dash-card-head">
+            {% if isCandidate %}
+              <h2 class="dash-card-title"><i class="fa-solid fa-user-graduate"></i> Candidate Center</h2>
+              <a class="auth-link" href="/candidate/profile">Edit profile</a>
+            {% elseif isHR %}
+              <h2 class="dash-card-title"><i class="fa-solid fa-building-user"></i> Employer Center</h2>
+              <a class="auth-link" href="/jobs/new">Post job</a>
+            {% else %}
+              <h2 class="dash-card-title"><i class="fa-solid fa-shield"></i> Admin Center</h2>
+              <a class="auth-link" href="/admin">Open admin</a>
+            {% endif %}
+          </div>
+
+          <div class="dash-card-body">
+            {% if isCandidate %}
+              <div class="list">
+                <div class="item">
+                  <div class="item-left">
+                    <div class="item-icon"><i class="fa-solid fa-file-lines"></i></div>
+                    <div>
+                      <p class="item-title">My Resumes</p>
+                      <div class="item-meta">
+                        Manage versions, upload new resumes, and choose a default.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item-actions">
+                    <a class="btn btn-secondary" href="/candidate/resumes"><i class="fa-solid fa-folder-open"></i> Open</a>
+                    <a class="btn" href="/candidate/resumes/new"><i class="fa-solid fa-upload"></i> Upload</a>
+                  </div>
+                </div>
+
+                <div class="item">
+                  <div class="item-left">
+                    <div class="item-icon"><i class="fa-solid fa-paper-plane"></i></div>
+                    <div>
+                      <p class="item-title">My Applications</p>
+                      <div class="item-meta">
+                        Track your application status and recruiter updates.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item-actions">
+                    <a class="btn btn-secondary" href="/candidate/applications"><i class="fa-solid fa-list-check"></i> Track</a>
+                    <a class="btn" href="/jobs"><i class="fa-solid fa-magnifying-glass"></i> Apply</a>
+                  </div>
+                </div>
+
+                <div class="item">
+                  <div class="item-left">
+                    <div class="item-icon"><i class="fa-solid fa-bullseye"></i></div>
+                    <div>
+                      <p class="item-title">Job Alerts</p>
+                      <div class="item-meta">
+                        Get notified when matching roles are posted.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item-actions">
+                    <a class="btn btn-secondary" href="/candidate/alerts"><i class="fa-solid fa-bell"></i> Configure</a>
+                  </div>
+                </div>
+              </div>
+
+            {% elseif isHR %}
+              <div class="list">
+                <div class="item">
+                  <div class="item-left">
+                    <div class="item-icon"><i class="fa-solid fa-plus"></i></div>
+                    <div>
+                      <p class="item-title">Create a Job Posting</p>
+                      <div class="item-meta">Publish a new role and start receiving candidates.</div>
+                    </div>
+                  </div>
+                  <div class="item-actions">
+                    <a class="btn" href="/jobs/new"><i class="fa-solid fa-plus"></i> New Job</a>
+                  </div>
+                </div>
+
+                <div class="item">
+                  <div class="item-left">
+                    <div class="item-icon"><i class="fa-solid fa-briefcase"></i></div>
+                    <div>
+                      <p class="item-title">Manage Jobs</p>
+                      <div class="item-meta">Edit, close, or promote your existing job offers.</div>
+                    </div>
+                  </div>
+                  <div class="item-actions">
+                    <a class="btn btn-secondary" href="/employer/jobs"><i class="fa-solid fa-pen-to-square"></i> Manage</a>
+                  </div>
+                </div>
+
+                <div class="item">
+                  <div class="item-left">
+                    <div class="item-icon"><i class="fa-solid fa-users"></i></div>
+                    <div>
+                      <p class="item-title">Applicants Pipeline</p>
+                      <div class="item-meta">Review applications, shortlist, and schedule interviews.</div>
+                    </div>
+                  </div>
+                  <div class="item-actions">
+                    <a class="btn btn-secondary" href="/employer/applicants"><i class="fa-solid fa-list-check"></i> View</a>
+                  </div>
+                </div>
+              </div>
+
+            {% else %}
+              <div class="list">
+                <div class="item">
+                  <div class="item-left">
+                    <div class="item-icon"><i class="fa-solid fa-users"></i></div>
+                    <div>
+                      <p class="item-title">User Management</p>
+                      <div class="item-meta">Suspend, activate, or audit user activity.</div>
+                    </div>
+                  </div>
+                  <div class="item-actions">
+                    <a class="btn" href="/admin/users"><i class="fa-solid fa-users"></i> Open</a>
+                  </div>
+                </div>
+
+                <div class="item">
+                  <div class="item-left">
+                    <div class="item-icon"><i class="fa-solid fa-building"></i></div>
+                    <div>
+                      <p class="item-title">Company Verification</p>
+                      <div class="item-meta">Review company profiles and membership roles.</div>
+                    </div>
+                  </div>
+                  <div class="item-actions">
+                    <a class="btn btn-secondary" href="/admin/companies"><i class="fa-solid fa-circle-check"></i> Review</a>
+                  </div>
+                </div>
+
+                <div class="item">
+                  <div class="item-left">
+                    <div class="item-icon"><i class="fa-solid fa-briefcase"></i></div>
+                    <div>
+                      <p class="item-title">Job Moderation</p>
+                      <div class="item-meta">Remove spam, feature jobs, and manage categories.</div>
+                    </div>
+                  </div>
+                  <div class="item-actions">
+                    <a class="btn btn-secondary" href="/admin/jobs"><i class="fa-solid fa-shield"></i> Moderate</a>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        {# Right column: profile + memberships #}
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <h2 class="dash-card-title"><i class="fa-solid fa-id-badge"></i> Account</h2>
+            <a class="auth-link" href="/account">Settings</a>
+          </div>
+          <div class="dash-card-body">
+            <div class="item" style="border:none;padding:0;background:transparent">
+              <div class="item-left">
+                <div class="item-icon" style="background:rgba(236,72,153,0.12);color:var(--accent)">
+                  <i class="fa-solid fa-user"></i>
+                </div>
+                <div>
+                  <p class="item-title" style="margin-bottom:2px">{{ user.email }}</p>
+                  <div class="item-meta">
+                    Member since {{ user.createdAt ? user.createdAt|date('Y-m-d') : '—' }}
+                    {% if user.lastLoginAt %} • Last login {{ user.lastLoginAt|date('Y-m-d H:i') }}{% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:10px">
+              {% for r in roles %}
+                <span class="pill"><i class="fa-solid fa-shield-halved"></i> {{ r }}</span>
+              {% endfor %}
+            </div>
+
+            {% if isHR %}
+              <div style="margin-top:16px">
+                <h3 style="margin:0 0 10px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;color:var(--darker);font-size:15px">
+                  Company Memberships
+                </h3>
+
+                {% if user.companyMemberships is defined and user.companyMemberships|length > 0 %}
+                  <div class="list">
+                    {% for m in user.companyMemberships %}
+                      <div class="item">
+                        <div class="item-left">
+                          <div class="item-icon"><i class="fa-solid fa-building"></i></div>
+                          <div>
+                            <p class="item-title">{{ m.company.name|default('Company') }}</p>
+                            <div class="item-meta">Role: <b>{{ m.roleInCompany }}</b></div>
+                          </div>
+                        </div>
+                        <div class="item-actions">
+                          <a class="btn btn-secondary" href="/companies/{{ m.company.id|default('') }}"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open</a>
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  <div class="alert">
+                    <i class="fa-solid fa-triangle-exclamation" style="margin-right:8px;color:var(--warning)"></i>
+                    No company membership found. Ask an admin to assign you to a company.
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+
+            <div style="margin-top:16px">
+              <form method="post" action="/logout">
+                <button class="btn btn-accent" type="submit" style="width:100%">
+                  <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  {% else %}
+    <div class="dash-card" style="margin-top:120px">
+      <div class="dash-card-body">
+        <h1 class="dash-title">You are not authenticated</h1>
+        <p class="dash-sub">Please log in to access your dashboard.</p>
+        <a class="btn" href="/login"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+      </div>
+    </div>
+  {% endif %}
+</main>
+
+</body>
+</html>

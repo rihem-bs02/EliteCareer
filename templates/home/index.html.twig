@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EliteCareer | Premium Job Portal</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
+
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
+
+    {# Put these in /public #}
+    <link rel="stylesheet" href="{{ asset('styles.css') }}">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container nav-container">
+            <a href="{{ path('web_home') }}" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                EliteCareer
+            </a>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="{{ path('web_home') }}" class="nav-link">Home</a></li>
+                    <li><a href="#jobs" class="nav-link">Jobs</a></li>
+                    <li><a href="#companies" class="nav-link">Companies</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                {% if app.user %}
+                    <a href="/dashboard" class="btn btn-secondary">Dashboard</a>
+                    <form method="post" action="/logout" style="display:inline">
+                        <button type="submit" class="btn">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="/login" class="btn btn-secondary">Login</a>
+                    <a href="/register" class="btn">Register</a>
+                {% endif %}
+
+                <div class="hamburger" aria-label="Menu" role="button" tabindex="0">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+   <!-- ===== Modern Hero (FORCED: HTML + CSS together) ===== -->
+<section class="hero hero--modern" aria-label="Hero">
+  <style>
+    /* ===== Modern Hero (scoped-ish) ===== */
+    .hero--modern{
+      position: relative;
+      overflow: hidden;
+      padding: 180px 0 110px;
+      color: #fff;
+      background: linear-gradient(135deg, rgba(37,99,235,0.96), rgba(139,92,246,0.92));
+    }
+
+    .hero--modern::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(900px 420px at 10% 15%, rgba(255,255,255,0.14), transparent 55%),
+        radial-gradient(650px 360px at 90% 10%, rgba(236,72,153,0.14), transparent 60%),
+        radial-gradient(720px 420px at 50% 115%, rgba(255,255,255,0.10), transparent 55%),
+        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM63 10c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5z' fill='%23ffffff' fill-opacity='0.06' fill-rule='evenodd'/%3E%3C/svg%3E");
+      opacity: 1;
+      pointer-events:none;
+    }
+
+    /* These vars fall back if :root isn't loaded yet */
+    .hero--modern{
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --primary-light: #93c5fd;
+      --secondary: #8b5cf6;
+      --accent: #ec4899;
+      --dark: #1e293b;
+      --darker: #0f172a;
+      --gray: #64748b;
+      --gray-light: #e2e8f0;
+      --radius: 12px;
+      --radius-lg: 16px;
+      --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+      --transition: all 0.3s ease;
+      --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+
+    .hero--modern .container{
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .hero--modern .hero__grid{
+      position: relative;
+      z-index: 1;
+      display:grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 42px;
+      align-items: center;
+    }
+
+    .hero--modern .hero__content{ max-width: 720px; }
+
+    .hero--modern .hero__badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(10px);
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+    .hero--modern .hero__badge-dot{
+      width: 10px;
+      height: 10px;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 0 0 6px rgba(255,255,255,0.16);
+    }
+
+    .hero--modern .hero__title{
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-weight: 900;
+      letter-spacing: -0.6px;
+      line-height: 1.08;
+      font-size: clamp(2.2rem, 4.2vw, 3.75rem);
+      margin: 0 0 14px;
+      text-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    }
+
+    .hero--modern .hero__subtitle{
+      margin: 0 0 26px;
+      font-size: 1.05rem;
+      opacity: 0.92;
+      max-width: 62ch;
+    }
+
+    .hero--modern .hero__search{
+      display:grid;
+      grid-template-columns: 1.25fr auto 0.78fr auto 0.78fr auto;
+      gap: 0;
+      align-items: stretch;
+      padding: 8px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero--modern .hero__field{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 6px 10px;
+      min-height: 56px;
+    }
+
+    .hero--modern .hero__divider{
+      width: 1px;
+      margin: 10px 0;
+      background: rgba(255,255,255,0.22);
+    }
+
+    .hero--modern .hero__icon{
+      color: rgba(15,23,42,0.55);
+      font-size: 16px;
+    }
+    .hero--modern .hero__icon--muted{ color: rgba(15,23,42,0.45); }
+
+    .hero--modern .hero__input,
+    .hero--modern .hero__select{
+      width:100%;
+      border:none;
+      outline:none;
+      background: transparent;
+      color: var(--darker);
+      font-weight: 600;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .hero--modern .hero__field--input{
+      background: rgba(255,255,255,0.92);
+      border-radius: 14px;
+      border: 1px solid rgba(226,232,240,0.9);
+    }
+    .hero--modern .hero__field--select{
+      background: rgba(255,255,255,0.86);
+      border: 1px solid rgba(226,232,240,0.9);
+      border-radius: 14px;
+      position: relative;
+    }
+    .hero--modern .hero__select{
+      appearance: none;
+      padding-right: 28px;
+      cursor:pointer;
+    }
+    .hero--modern .hero__chev{
+      position:absolute;
+      right: 14px;
+      color: var(--primary);
+      pointer-events:none;
+      font-size: 12px;
+    }
+
+    .hero--modern .hero__btn{
+      border: none;
+      cursor:pointer;
+      padding: 0 18px;
+      border-radius: 14px;
+      background: var(--gradient);
+      color:#fff;
+      font-weight: 800;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+      min-height: 56px;
+      transition: var(--transition);
+      box-shadow: 0 18px 30px -20px rgba(0,0,0,0.35);
+    }
+    .hero--modern .hero__btn:hover{
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero--modern .hero__actions{
+      display:flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    /* If your global .btn exists, you can remove this fallback */
+    .hero--modern .btn{
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 26px;
+      background: var(--gradient);
+      color: #fff;
+      border-radius: 12px;
+      font-weight: 700;
+      border: none;
+      text-decoration: none;
+      transition: var(--transition);
+      box-shadow: 0 18px 34px -24px rgba(0,0,0,0.38);
+    }
+    .hero--modern .btn:hover{ transform: translateY(-2px); }
+    .hero--modern .btn.btn-accent{ background: var(--accent); }
+
+    .hero--modern .hero__stats{
+      margin-top: 22px;
+      display:flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      opacity: 0.95;
+    }
+    .hero--modern .hero__stat{
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(10px);
+      min-width: 160px;
+    }
+    .hero--modern .hero__stat-value{
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-weight: 900;
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+    .hero--modern .hero__stat-label{ font-size: 13px; opacity: 0.9; }
+
+    .hero--modern .hero__visual{ position: relative; min-height: 520px; }
+    .hero--modern .hero__glass{
+      position: relative;
+      z-index: 2;
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero--modern .hero__glass-top{
+      display:flex;
+      gap: 14px;
+      align-items:center;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.14);
+      margin-bottom: 14px;
+    }
+    .hero--modern .hero__avatar{
+      width: 52px; height: 52px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.18);
+      display:flex; align-items:center; justify-content:center;
+      font-size: 18px;
+      box-shadow: 0 20px 40px -25px rgba(0,0,0,0.45);
+    }
+    .hero--modern .hero__glass-title{ font-weight: 900; font-size: 15px; }
+    .hero--modern .hero__glass-sub{ font-size: 13px; opacity: 0.9; }
+
+    .hero--modern .hero__mini-cards{ display:flex; flex-direction:column; gap: 10px; }
+    .hero--modern .hero__mini{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.92);
+      color: var(--darker);
+      border: 1px solid rgba(226,232,240,0.9);
+    }
+    .hero--modern .hero__mini-ico{
+      width: 44px; height: 44px;
+      border-radius: 14px;
+      display:flex; align-items:center; justify-content:center;
+      background: rgba(139,92,246,0.14);
+      color: var(--secondary);
+      flex: 0 0 auto;
+    }
+    .hero--modern .hero__mini-title{ font-weight: 900; }
+    .hero--modern .hero__mini-meta{ font-size: 13px; color: var(--gray); margin-top: 2px; }
+    .hero--modern .hero__mini-pill{
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      color: #fff;
+      background: linear-gradient(135deg, rgba(59,130,246,0.95), rgba(139,92,246,0.95));
+      white-space: nowrap;
+    }
+    .hero--modern .hero__mini-pill--soft{
+      background: rgba(236,72,153,0.12);
+      color: var(--accent);
+      border: 1px solid rgba(236,72,153,0.22);
+    }
+
+    .hero--modern .hero__orb{
+      position:absolute;
+      border-radius: 999px;
+      filter: blur(14px);
+      opacity: 0.55;
+      z-index: 1;
+    }
+    .hero--modern .hero__orb--one{
+      width: 210px; height: 210px;
+      left: -30px; top: 80px;
+      background: rgba(236,72,153,0.55);
+    }
+    .hero--modern .hero__orb--two{
+      width: 280px; height: 280px;
+      right: -40px; top: 40px;
+      background: rgba(255,255,255,0.28);
+    }
+    .hero--modern .hero__orb--three{
+      width: 240px; height: 240px;
+      right: 40px; bottom: 40px;
+      background: rgba(59,130,246,0.55);
+    }
+
+    .hero--modern .hero__wave{
+      position:absolute;
+      left:0; right:0;
+      bottom:-1px;
+      height: 180px;
+      background:
+        url("data:image/svg+xml,%3Csvg width='1440' height='260' viewBox='0 0 1440 260' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23ffffff' d='M0 164C160 214 320 234 480 218C640 202 800 148 960 120C1120 92 1280 90 1440 120V260H0V164Z'/%3E%3C/svg%3E")
+        center bottom / cover no-repeat;
+      pointer-events:none;
+    }
+
+    @media (max-width: 992px){
+      .hero--modern .hero__grid{ grid-template-columns: 1fr; }
+      .hero--modern .hero__visual{ min-height: auto; }
+    }
+
+    @media (max-width: 768px){
+      .hero--modern{ padding: 150px 0 90px; }
+      .hero--modern .hero__search{
+        grid-template-columns: 1fr;
+        gap: 12px;
+        background: transparent;
+        border: none;
+        padding: 0;
+        box-shadow: none;
+        backdrop-filter: none;
+      }
+      .hero--modern .hero__divider{ display:none; }
+      .hero--modern .hero__field--input,
+      .hero--modern .hero__field--select,
+      .hero--modern .hero__btn{ border-radius: 16px; }
+    }
+  </style>
+
+  <div class="container hero__grid">
+    <div class="hero__content">
+      <div class="hero__badge">
+        <span class="hero__badge-dot"></span>
+        <span>Trusted by teams & candidates worldwide</span>
+      </div>
+
+      <h1 class="hero__title">Discover Your Perfect Career Match</h1>
+      <p class="hero__subtitle">
+        Join thousands of professionals finding their dream jobs at top companies worldwide.
+      </p>
+
+      <form class="hero__search" action="/jobs" method="get" role="search">
+        <div class="hero__field hero__field--input">
+          <i class="fas fa-search hero__icon" aria-hidden="true"></i>
+          <input name="q" type="text" class="hero__input" placeholder="Job title, keywords, or company" />
+        </div>
+
+        <div class="hero__divider" aria-hidden="true"></div>
+
+        <div class="hero__field hero__field--select">
+          <i class="fas fa-location-dot hero__icon hero__icon--muted" aria-hidden="true"></i>
+          <select class="hero__select" name="location" aria-label="Location">
+            <option value="">All Locations</option>
+            <option>New York</option>
+            <option>London</option>
+            <option>Tokyo</option>
+            <option>San Francisco</option>
+            <option>Berlin</option>
+          </select>
+          <i class="fas fa-chevron-down hero__chev" aria-hidden="true"></i>
+        </div>
+
+        <div class="hero__divider" aria-hidden="true"></div>
+
+        <div class="hero__field hero__field--select">
+          <i class="fas fa-layer-group hero__icon hero__icon--muted" aria-hidden="true"></i>
+          <select class="hero__select" name="category" aria-label="Category">
+            <option value="">All Categories</option>
+            <option>Technology</option>
+            <option>Finance</option>
+            <option>Healthcare</option>
+            <option>Education</option>
+            <option>Marketing</option>
+          </select>
+          <i class="fas fa-chevron-down hero__chev" aria-hidden="true"></i>
+        </div>
+
+        <button class="hero__btn" type="submit">
+          <i class="fas fa-search" aria-hidden="true"></i>
+          Search
+        </button>
+      </form>
+
+      <div class="hero__actions">
+        <a href="#jobs" class="btn">
+          <i class="fas fa-briefcase"></i>
+          Find Jobs
+        </a>
+        <a href="/login" class="btn btn-accent">
+          <i class="fas fa-plus"></i>
+          Post a Job
+        </a>
+      </div>
+
+      <div class="hero__stats" aria-label="Platform stats">
+        <div class="hero__stat">
+          <div class="hero__stat-value">12K+</div>
+          <div class="hero__stat-label">Jobs posted</div>
+        </div>
+        <div class="hero__stat">
+          <div class="hero__stat-value">3.5K+</div>
+          <div class="hero__stat-label">Companies</div>
+        </div>
+        <div class="hero__stat">
+          <div class="hero__stat-value">98%</div>
+          <div class="hero__stat-label">Match rate</div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="hero__visual" aria-hidden="true">
+      <div class="hero__glass">
+        <div class="hero__glass-top">
+          <div class="hero__avatar">
+            <i class="fas fa-user-tie"></i>
+          </div>
+          <div>
+            <div class="hero__glass-title">Weekly picks</div>
+            <div class="hero__glass-sub">Roles matched to your profile</div>
+          </div>
+        </div>
+
+        <div class="hero__mini-cards">
+          <div class="hero__mini">
+            <div class="hero__mini-ico"><i class="fas fa-code"></i></div>
+            <div style="flex:1">
+              <div class="hero__mini-title">Frontend Engineer</div>
+              <div class="hero__mini-meta">Remote • Full-time</div>
+            </div>
+            <span class="hero__mini-pill">New</span>
+          </div>
+
+          <div class="hero__mini">
+            <div class="hero__mini-ico"><i class="fas fa-chart-line"></i></div>
+            <div style="flex:1">
+              <div class="hero__mini-title">Data Analyst</div>
+              <div class="hero__mini-meta">Berlin • Hybrid</div>
+            </div>
+            <span class="hero__mini-pill hero__mini-pill--soft">Hot</span>
+          </div>
+
+          <div class="hero__mini">
+            <div class="hero__mini-ico"><i class="fas fa-shield"></i></div>
+            <div style="flex:1">
+              <div class="hero__mini-title">Cybersecurity Intern</div>
+              <div class="hero__mini-meta">London • Internship</div>
+            </div>
+            <span class="hero__mini-pill hero__mini-pill--soft">Top</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__orb hero__orb--one"></div>
+      <div class="hero__orb hero__orb--two"></div>
+      <div class="hero__orb hero__orb--three"></div>
+    </aside>
+  </div>
+
+  <div class="hero__wave" aria-hidden="true"></div>
+</section>
+
+
+    <!-- Featured Jobs Section -->
+    <section id="jobs" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Featured Opportunities</h2>
+                <p class="section-subtitle">Browse through our most recent job openings from innovative companies</p>
+            </div>
+
+            <div class="jobs-filter">
+                <button class="filter-btn active"><i class="fas fa-layer-group"></i>All Jobs</button>
+                <button class="filter-btn"><i class="fas fa-laptop-house"></i>Remote</button>
+                <button class="filter-btn"><i class="fas fa-business-time"></i>Full-time</button>
+                <button class="filter-btn"><i class="fas fa-clock"></i>Part-time</button>
+                <button class="filter-btn"><i class="fas fa-file-contract"></i>Contract</button>
+            </div>
+
+            <div class="jobs-grid">
+                <!-- Job Card 1 -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="company-logo">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <div class="job-meta">
+                            <span class="job-type remote">Remote</span>
+                        </div>
+                    </div>
+                    <h3 class="job-title">Senior Frontend Developer</h3>
+                    <span class="job-company">Google</span>
+
+                    <div class="job-details">
+                        <div class="job-detail"><i class="fas fa-map-marker-alt"></i><span>California, USA</span></div>
+                        <div class="job-detail"><i class="fas fa-briefcase"></i><span>Full-time</span></div>
+                        <div class="job-detail"><i class="fas fa-graduation-cap"></i><span>Master's</span></div>
+                    </div>
+
+                    <div class="job-footer">
+                        <div class="job-salary">$120,000 - $150,000</div>
+                        <a href="/login" class="btn">Apply Now</a>
+                    </div>
+                </div>
+
+                <!-- Job Card 2 -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="company-logo">
+                            <i class="fab fa-microsoft"></i>
+                        </div>
+                        <div class="job-meta">
+                            <span class="job-type fulltime">Full-time</span>
+                        </div>
+                    </div>
+                    <h3 class="job-title">Product Designer</h3>
+                    <span class="job-company">Microsoft</span>
+
+                    <div class="job-details">
+                        <div class="job-detail"><i class="fas fa-map-marker-alt"></i><span>Redmond, USA</span></div>
+                        <div class="job-detail"><i class="fas fa-briefcase"></i><span>Full-time</span></div>
+                        <div class="job-detail"><i class="fas fa-graduation-cap"></i><span>Bachelor's</span></div>
+                    </div>
+
+                    <div class="job-footer">
+                        <div class="job-salary">$110,000 - $140,000</div>
+                        <a href="/login" class="btn">Apply Now</a>
+                    </div>
+                </div>
+
+                <!-- Job Card 3 -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="company-logo">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                        <div class="job-meta">
+                            <span class="job-type contract">Contract</span>
+                        </div>
+                    </div>
+                    <h3 class="job-title">iOS Developer</h3>
+                    <span class="job-company">Apple</span>
+
+                    <div class="job-details">
+                        <div class="job-detail"><i class="fas fa-map-marker-alt"></i><span>Cupertino, USA</span></div>
+                        <div class="job-detail"><i class="fas fa-briefcase"></i><span>Contract</span></div>
+                        <div class="job-detail"><i class="fas fa-graduation-cap"></i><span>Bachelor's</span></div>
+                    </div>
+
+                    <div class="job-footer">
+                        <div class="job-salary">$130,000 - $160,000</div>
+                        <a href="/login" class="btn">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-more">
+                <a href="#jobs" class="btn btn-secondary">
+                    <i class="fas fa-eye"></i>
+                    View All Jobs
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Companies Section -->
+    <section id="companies" class="section companies-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Top Employers</h2>
+                <p class="section-subtitle">Explore opportunities from industry-leading companies around the world</p>
+            </div>
+
+            <div class="companies-slider swiper">
+                <div class="swiper-wrapper">
+                    <div class="company-slide swiper-slide">
+                        <div class="company-logo-large"><i class="fab fa-google"></i></div>
+                        <h3 class="company-name">Google</h3>
+                        <div class="company-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                            <span>4.5</span>
+                        </div>
+                        <div class="company-jobs">124 open positions</div>
+                        <a href="#jobs" class="btn">View Jobs</a>
+                    </div>
+
+                    <div class="company-slide swiper-slide">
+                        <div class="company-logo-large"><i class="fab fa-microsoft"></i></div>
+                        <h3 class="company-name">Microsoft</h3>
+                        <div class="company-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            <span>4.8</span>
+                        </div>
+                        <div class="company-jobs">98 open positions</div>
+                        <a href="#jobs" class="btn">View Jobs</a>
+                    </div>
+
+                    <div class="company-slide swiper-slide">
+                        <div class="company-logo-large"><i class="fab fa-apple"></i></div>
+                        <h3 class="company-name">Apple</h3>
+                        <div class="company-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            <span>4.9</span>
+                        </div>
+                        <div class="company-jobs">87 open positions</div>
+                        <a href="#jobs" class="btn">View Jobs</a>
+                    </div>
+
+                    <div class="company-slide swiper-slide">
+                        <div class="company-logo-large"><i class="fab fa-amazon"></i></div>
+                        <h3 class="company-name">Amazon</h3>
+                        <div class="company-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                            <span>4.3</span>
+                        </div>
+                        <div class="company-jobs">156 open positions</div>
+                        <a href="#jobs" class="btn">View Jobs</a>
+                    </div>
+
+                    <div class="company-slide swiper-slide">
+                        <div class="company-logo-large"><i class="fab fa-facebook"></i></div>
+                        <h3 class="company-name">Meta</h3>
+                        <div class="company-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            <span>4.7</span>
+                        </div>
+                        <div class="company-jobs">112 open positions</div>
+                        <a href="#jobs" class="btn">View Jobs</a>
+                    </div>
+
+                    <div class="company-slide swiper-slide">
+                        <div class="company-logo-large"><i class="fa-brands fa-salesforce"></i></div>
+                        <h3 class="company-name">Salesforce</h3>
+                        <div class="company-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                            <span>4.6</span>
+                        </div>
+                        <div class="company-jobs">76 open positions</div>
+                        <a href="#jobs" class="btn">View Jobs</a>
+                    </div>
+                </div>
+
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose EliteCareer</h2>
+                <p class="section-subtitle">We provide the premier platform for professionals and companies to connect</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <dotlottie-wc src="https://lottie.host/b6b835ee-bd79-4fdc-83ab-2339e2da8e3e/ETUT5abS6R.lottie"
+                          style="width: 300px;height: 100px" speed="1" autoplay loop></dotlottie-wc>
+                    </div>
+                    <h3 class="feature-title">Streamlined Application Process</h3>
+                    <p class="feature-desc">Apply to multiple positions with just a few clicks. Save your resume and cover letter templates for quick applications.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <dotlottie-wc src="https://lottie.host/f546fa9d-ba76-4bab-a433-b4f64d7ee4da/peZZstHgsb.lottie"
+                          style="width: 300px;height: 100px" speed="1" autoplay loop></dotlottie-wc>
+                    </div>
+                    <h3 class="feature-title">Verified Companies</h3>
+                    <p class="feature-desc">All companies on our platform undergo a verification process to ensure legitimate and high-quality job opportunities.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <dotlottie-wc src="https://lottie.host/cbf9e115-2040-43db-b289-9cfbfb052ef5/BxO9EaWlaI.lottie"
+                          style="width: 300px;height: 100px" speed="1" autoplay loop></dotlottie-wc>
+                    </div>
+                    <h3 class="feature-title">Career Growth Resources</h3>
+                    <p class="feature-desc">Access exclusive resources, webinars, and career coaching to help you grow professionally and achieve your goals.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section testimonials-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Success Stories</h2>
+                <p class="section-subtitle">Hear from professionals who found their dream careers through EliteCareer</p>
+            </div>
+
+            <div class="testimonials-slider swiper">
+                <div class="swiper-wrapper">
+                    <div class="testimonial-slide swiper-slide">
+                        <div class="testimonial-content">
+                            "EliteCareer transformed my job search experience. The personalized recommendations and streamlined application process helped me land my dream role at Google within three weeks of signing up. The platform is intuitive and the quality of listings is exceptional."
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar"><i class="fas fa-user"></i></div>
+                            <div class="author-details">
+                                <div class="author-name">Sarah Johnson</div>
+                                <div class="author-role">Senior Software Engineer at Google</div>
+                            </div>
+                            <div class="testimonial-rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-slide swiper-slide">
+                        <div class="testimonial-content">
+                            "As a hiring manager, EliteCareer has been invaluable for finding top talent. The platform's matching algorithm consistently delivers qualified candidates who are genuinely interested in the opportunities we offer. It's streamlined our recruitment process significantly."
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar"><i class="fas fa-user"></i></div>
+                            <div class="author-details">
+                                <div class="author-name">Michael Chen</div>
+                                <div class="author-role">Product Director at Microsoft</div>
+                            </div>
+                            <div class="testimonial-rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-slide swiper-slide">
+                        <div class="testimonial-content">
+                            "After being laid off during the pandemic, I was struggling to find opportunities that matched my skillset. EliteCareer not only connected me with relevant positions but also provided career counseling that helped me pivot into a more promising industry. I'm now in a role I love with better compensation."
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar"><i class="fas fa-user"></i></div>
+                            <div class="author-details">
+                                <div class="author-name">Jessica Williams</div>
+                                <div class="author-role">UX Design Lead at Apple</div>
+                            </div>
+                            <div class="testimonial-rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready to Advance Your Career?</h2>
+            <p class="cta-subtitle">Join our community of professionals and get matched with opportunities that align with your skills and aspirations</p>
+            <form class="cta-form">
+                <input type="email" class="cta-input" placeholder="Enter your email" required>
+                <button type="submit" class="cta-btn">
+                    <i class="fas fa-rocket"></i>
+                    Get Started
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="{{ path('web_home') }}" class="footer-logo">
+                        <div class="footer-logo-icon"><i class="fas fa-briefcase"></i></div>
+                        EliteCareer
+                    </a>
+                    <p class="footer-desc">
+                        EliteCareer is the premier job portal connecting exceptional talent with world-class companies. Our platform is designed to make career advancement accessible and efficient for professionals at every stage of their journey.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-links-column">
+                    <h3 class="footer-heading">For Job Seekers</h3>
+                    <ul class="footer-links">
+                        <li><a href="#jobs" class="footer-link"><i class="fas fa-chevron-right"></i>Browse Jobs</a></li>
+                        <li><a href="#companies" class="footer-link"><i class="fas fa-chevron-right"></i>Browse Companies</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right"></i>Salary Calculator</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right"></i>Career Advice</a></li>
+                        <li><a href="/login" class="footer-link"><i class="fas fa-chevron-right"></i>Upload Resume</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links-column">
+                    <h3 class="footer-heading">For Employers</h3>
+                    <ul class="footer-links">
+                        <li><a href="/login" class="footer-link"><i class="fas fa-chevron-right"></i>Post a Job</a></li>
+                        <li><a href="/login" class="footer-link"><i class="fas fa-chevron-right"></i>Browse Resumes</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right"></i>Recruitment Solutions</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right"></i>Pricing Plans</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right"></i>Employer Reviews</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links-column">
+                    <h3 class="footer-heading">Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right"></i>Help Center</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right"></i>Career Blog</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right"></i>Webinars</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right"></i>Community</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right"></i>Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2025 EliteCareer. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    <script src="{{ asset('script.js') }}"></script>
+</body>
+</html>
