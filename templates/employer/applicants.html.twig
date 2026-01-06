@@ -1,0 +1,366 @@
+{# templates/employer/applicants_index.html.twig #}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Applicants | EliteCareer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #60a5fa;
+      --accent: #ec4899;
+
+      --success: #16a34a;
+      --error: #ef4444;
+
+      --darker: #020617;
+      --dark: #0f172a;
+      --light: #f1f5f9;
+
+      --gray: #64748b;
+      --gray-dark: #475569;
+      --gray-light: #e2e8f0;
+      --gray-lighter: #f8fafc;
+
+      --radius: 0.75rem;
+      --radius-lg: 1rem;
+
+      --shadow: 0 10px 25px rgba(15, 23, 42, 0.14);
+      --shadow-lg: 0 20px 55px rgba(15, 23, 42, 0.20);
+
+      --transition: 180ms ease;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, #e0f2fe 0, #f9fafb 40%, #f8fafc 100%);
+      color: var(--darker);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .shell {
+      padding: 140px 20px 80px;
+    }
+
+    .inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      .shell {
+        padding: 120px 16px 60px;
+      }
+    }
+
+    .hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: var(--darker);
+      margin: 0 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.03em;
+    }
+
+    .sub {
+      color: var(--gray);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #ffffff;
+      box-shadow: 0 10px 24px rgba(37,99,235,0.3);
+      transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        opacity var(--transition),
+        background var(--transition),
+        border-color var(--transition),
+        color var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn i {
+      font-size: 0.9em;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(37,99,235,0.35);
+      opacity: 0.97;
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 18px rgba(30,64,175,0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(248,250,252,0.96);
+      color: var(--darker);
+      border-color: rgba(148,163,184,0.7);
+      box-shadow: 0 10px 20px rgba(15,23,42,0.06);
+    }
+
+    .btn-secondary:hover {
+      background: #ffffff;
+      border-color: rgba(148,163,184,0.95);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(15,23,42,0.12);
+    }
+
+    .btn-xs {
+      padding: 5px 10px;
+      font-size: 0.78rem;
+      box-shadow: none;
+    }
+
+    .btn-xs i {
+      font-size: 0.8em;
+    }
+
+    /* Card */
+    .card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-light);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--gray-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background:
+        radial-gradient(700px 320px at -10% 0%, rgba(59,130,246,0.10), transparent 55%),
+        linear-gradient(180deg, rgba(15,23,42,0.05), transparent);
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--darker);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Table */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      min-width: 720px;
+    }
+
+    th, td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--gray-lighter);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: rgba(248,250,252,0.95);
+      font-weight: 600;
+      color: var(--gray);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Pills */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      border: 1px solid var(--gray-light);
+      color: var(--gray-dark);
+      background: rgba(148,163,184,0.08);
+      white-space: nowrap;
+    }
+
+    .pill--hire {
+      background: rgba(16,185,129,0.08);
+      border-color: rgba(16,185,129,0.4);
+      color: var(--success);
+    }
+
+    .pill--reject {
+      background: rgba(239,68,68,0.08);
+      border-color: rgba(239,68,68,0.4);
+      color: var(--error);
+    }
+
+    @media (max-width: 768px) {
+      th, td {
+        padding: 10px 10px;
+      }
+    }
+  </style>
+</head>
+<body class="dash-body">
+<main class="shell">
+  <div class="inner">
+
+    <header class="hdr">
+      <div>
+        <h1 class="title">
+          <i class="fa-solid fa-users-viewfinder" style="color:var(--primary)"></i>
+          Applicants
+        </h1>
+        <p class="sub">
+          Review candidates who applied to your job postings. AI scores are shown when available.
+        </p>
+      </div>
+      <div>
+        <a href="{{ path('web_dashboard') }}" class="btn btn-secondary">
+          <i class="fa-solid fa-gauge-high"></i> Back to dashboard
+        </a>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="card-head">
+        <h2 class="card-title">
+          <i class="fa-solid fa-list-check"></i>
+          Candidates
+        </h2>
+        <span style="font-size:0.82rem;color:var(--gray);">
+          {{ applications|length }} application{{ applications|length == 1 ? '' : 's' }}
+        </span>
+      </div>
+
+      {% if applications is not empty %}
+        <div class="table-wrapper">
+          <table>
+            <thead>
+            <tr>
+              <th>Candidate</th>
+              <th>Job</th>
+              <th>Status</th>
+              <th>AI decision</th>
+              <th>Score</th>
+              <th>Applied</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for app in applications %}
+              {% set mr = app.matchResults|last %}
+              <tr>
+                <td>
+                  <strong>{{ app.candidate.fullName ?? app.candidate.email }}</strong><br>
+                  <span style="font-size:0.8rem;color:var(--gray);">
+                    {{ app.candidate.email }}
+                  </span>
+                </td>
+                <td>
+                  <strong>{{ app.job.title }}</strong><br>
+                  <span style="font-size:0.8rem;color:var(--gray);">
+                    {{ app.job.location ?? '—' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="pill">
+                    {{ app.status }}
+                  </span>
+                </td>
+                <td>
+                  {% if mr %}
+                    {% set dec = mr.decision|upper %}
+                    <span class="pill
+                      {% if dec == 'HIRE' %}pill--hire{% elseif dec == 'REJECT' %}pill--reject{% endif %}
+                    ">
+                      {{ mr.decision }}
+                    </span>
+                  {% else %}
+                    <span style="font-size:0.8rem;color:var(--gray);">Not evaluated yet</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if mr %}
+                    {{ mr.overallScore }}/100
+                  {% else %}
+                    —
+                  {% endif %}
+                </td>
+                <td>
+                  {{ app.appliedAt ? app.appliedAt|date('Y-m-d H:i') : '—' }}
+                </td>
+                <td>
+                  <a href="{{ path('web_employer_applicant_show', {id: app.id}) }}" class="btn btn-xs btn-secondary">
+                    <i class="fa-solid fa-eye"></i> View
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div style="padding:18px;font-size:0.95rem;color:var(--gray);">
+          No candidates yet. Once applicants apply to your jobs, they will appear here.
+        </div>
+      {% endif %}
+    </section>
+
+  </div>
+</main>
+</body>
+</html>

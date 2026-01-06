@@ -6,127 +6,710 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dashboard | EliteCareer</title>
 
-  {# Keep your global CSS if you already have it #}
+  {# Fonts & icons #}
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
-  <link rel="stylesheet" href="/styles.css">
 
   <style>
-    /* =========================
-       DASHBOARD UI (minimal)
-       ========================= */
-    .dash-body{ background: var(--light); min-height: 100vh; padding-top: 110px; }
-    .dash-header{ display:flex; align-items:flex-start; justify-content:space-between; gap:18px; margin-bottom: 22px; }
-    .dash-title{ font-size: 34px; line-height:1.1; color: var(--darker); margin:0; }
-    .dash-sub{ color: var(--gray); margin-top:8px; max-width: 70ch; }
-    .dash-actions{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:flex-end; }
+    :root {
+      --primary: #2563eb;
+      --primary-light: #3b82f6;
+      --primary-soft: rgba(37, 99, 235, 0.08);
+      --primary-dark: #1d4ed8;
 
-    .dash-grid{ display:grid; grid-template-columns: 1fr; gap: 18px; margin-top: 18px; }
-    .dash-row{ display:grid; grid-template-columns: 1fr; gap: 18px; }
-    @media (min-width: 992px){
-      .dash-row{ grid-template-columns: 1.25fr 0.75fr; align-items:start; }
+      --secondary: #8b5cf6;
+      --accent: #ec4899;
+      --warning: #fbbf24;
+
+      --success: #16a34a;
+      --error: #ef4444;
+
+      --darker: #020617;
+      --dark: #0f172a;
+      --light: #eef2ff;
+
+      --gray: #6b7280;
+      --gray-dark: #4b5563;
+      --gray-light: #e5e7eb;
+      --gray-lighter: #f9fafb;
+
+      --radius: 8px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+
+      --shadow-sm: 0 4px 10px rgba(15, 23, 42, 0.10);
+      --shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+      --shadow-lg: 0 18px 45px rgba(15, 23, 42, 0.20);
+
+      --transition: 150ms ease;
     }
 
-    .dash-card{
-      background: #fff;
-      border-radius: var(--radius-lg);
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--dark);
+      background:
+        radial-gradient(circle at top left, #dbeafe 0, transparent 55%),
+        radial-gradient(circle at top right, #fce7f3 0, transparent 50%),
+        #e5e7eb;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* =========================
+       NAVBAR
+       ========================= */
+    .main-navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: linear-gradient(
+        to bottom,
+        rgba(15, 23, 42, 0.96),
+        rgba(15, 23, 42, 0.92),
+        rgba(15, 23, 42, 0.88)
+      );
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.75);
+    }
+
+    .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .nav-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 0% 0%, #38bdf8, #6366f1 40%, #ec4899 80%);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.6);
+    }
+
+    .nav-brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .nav-brand-name {
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      font-size: 1.12rem;
+      font-weight: 800;
+      color: #f9fafb;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-brand-tagline {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: rgba(148, 163, 184, 0.95);
+    }
+
+    .nav-main {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .nav-link {
+      position: relative;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: rgba(209, 213, 219, 0.96);
+      text-decoration: none;
+      padding: 6px 0;
+      transition: color var(--transition);
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #3b82f6, #a855f7, #ec4899);
+      transition: width 160ms ease;
+    }
+
+    .nav-link:hover {
+      color: #ffffff;
+    }
+
+    .nav-link:hover::after,
+    .nav-link--active::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-ghost-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: rgba(209, 213, 219, 0.95);
+      text-decoration: none;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.8);
+      transition: background var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+
+    .nav-ghost-link i {
+      font-size: 0.85rem;
+    }
+
+    .nav-ghost-link:hover {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: rgba(209, 213, 219, 0.8);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-primary-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.86rem;
+      font-weight: 700;
+      text-decoration: none;
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      color: #0f172a;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.65);
+      transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+    }
+
+    .nav-primary-btn i {
+      font-size: 0.9rem;
+    }
+
+    .nav-primary-btn:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.85);
+    }
+
+    .nav-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.92);
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition), transform var(--transition);
+    }
+
+    .nav-toggle i {
+      font-size: 1rem;
+    }
+
+    .nav-toggle:hover {
+      background: rgba(15, 23, 42, 0.99);
+      border-color: rgba(209, 213, 219, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .nav-mobile-panel {
+      display: none;
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      padding: 10px 16px 14px;
+      background: rgba(15, 23, 42, 0.98);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.85);
+    }
+
+    .nav-mobile-links {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .nav-mobile-link {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: rgba(209, 213, 219, 0.97);
+      text-decoration: none;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .nav-mobile-link:hover {
+      background: rgba(31, 41, 55, 0.95);
+      color: #ffffff;
+    }
+
+    .nav-mobile-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nav-mobile-panel.nav-mobile-panel--open {
+      display: block;
+    }
+
+    @media (max-width: 900px) {
+      .nav-main {
+        display: none;
+      }
+
+      .nav-toggle {
+        display: inline-flex;
+      }
+    }
+
+    /* =========================
+       GENERIC UI ELEMENTS
+       ========================= */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto 60px;
+      padding: 0 20px;
+    }
+
+    .dash-body {
+      min-height: 100vh;
+      padding-top: 120px; /* room for navbar */
+    }
+
+    .btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:0.85rem;
+      font-weight:500;
+      text-decoration:none;
+      cursor:pointer;
+      transition:background var(--transition), border-color var(--transition),
+                 transform var(--transition), box-shadow var(--transition), color var(--transition);
+      border:1px solid rgba(148,163,184,0.7);
+      background:rgba(248,250,252,0.96);
+      color:rgba(55,65,81,0.98);
+    }
+
+    .btn i {
+      font-size:0.85rem;
+    }
+
+    .btn:hover {
+      background:#ffffff;
+      border-color:rgba(148,163,184,0.95);
+      transform:translateY(-1px);
+      box-shadow:var(--shadow-sm);
+    }
+
+    .btn-secondary {
+      background:rgba(15,23,42,0.03);
+      border-color:rgba(148,163,184,0.8);
+      color:var(--dark);
+    }
+
+    .btn-secondary:hover {
+      background:#ffffff;
+    }
+
+    .btn-accent {
+      border:none;
+      background:linear-gradient(135deg,#3b82f6,#6366f1);
+      color:#f9fafb;
+      box-shadow:0 10px 30px rgba(37,99,235,0.5);
+    }
+
+    .btn-accent:hover {
+      filter:brightness(1.05);
+      transform:translateY(-1px);
+      box-shadow:0 14px 38px rgba(37,99,235,0.7);
+    }
+
+    .auth-link {
+      font-size:0.8rem;
+      font-weight:500;
+      color:var(--primary-dark);
+      text-decoration:none;
+    }
+
+    .auth-link:hover {
+      text-decoration:underline;
+    }
+
+    /* =========================
+       DASHBOARD LAYOUT
+       ========================= */
+    .dash-header {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom: 22px;
+      flex-wrap:wrap;
+    }
+
+    .dash-title {
+      font-size: 2.1rem;
+      line-height:1.1;
+      color: var(--darker);
+      margin:0;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-family:'Plus Jakarta Sans',sans-serif;
+      font-weight:800;
+    }
+
+    .dash-title i {
+      color:var(--primary);
+      font-size:1.6rem;
+    }
+
+    .dash-sub {
+      color: var(--gray-dark);
+      margin-top:8px;
+      max-width: 70ch;
+      font-size:0.96rem;
+    }
+
+    .dash-sub b {
+      color:var(--darker);
+    }
+
+    .dash-actions {
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
+    .dash-grid {
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .dash-row {
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    @media (min-width: 992px){
+      .dash-row {
+        grid-template-columns: 1.25fr 0.75fr;
+        align-items:flex-start;
+      }
+    }
+
+    .dash-card {
+      background: #ffffff;
+      border-radius: var(--radius-xl);
       border: 1px solid var(--gray-light);
       box-shadow: var(--shadow);
       overflow:hidden;
+      position:relative;
     }
-    .dash-card-head{
+
+    .dash-card::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(500px 220px at -10% 0%, rgba(59,130,246,0.08), transparent 58%),
+        radial-gradient(460px 220px at 110% 0%, rgba(236,72,153,0.08), transparent 60%);
+      opacity:0.9;
+      pointer-events:none;
+    }
+
+    .dash-card-head,
+    .dash-card-body {
+      position:relative;
+      z-index:1;
+    }
+
+    .dash-card-head {
       padding: 18px 18px 14px;
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
       border-bottom: 1px solid var(--gray-light);
-      background: linear-gradient(180deg, rgba(59,130,246,0.06), transparent);
+      background: linear-gradient(180deg, rgba(15,23,42,0.02), transparent);
     }
-    .dash-card-title{
+
+    .dash-card-title {
       margin:0;
-      font-size: 16px;
+      font-size: 0.9rem;
       font-weight: 800;
       color: var(--darker);
-      letter-spacing: .2px;
-      display:flex; align-items:center; gap:10px;
+      letter-spacing: .14em;
+      text-transform:uppercase;
+      display:flex;
+      align-items:center;
+      gap:10px;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    .dash-card-body{ padding: 18px; }
 
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 8px 12px;
+    .dash-card-title i {
+      color:var(--primary);
+      font-size:1rem;
+    }
+
+    .dash-card-body {
+      padding: 18px;
+    }
+
+    .pill {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px 11px;
       border-radius: 999px;
       border: 1px solid var(--gray-light);
-      background: var(--gray-lighter);
+      background: rgba(248,250,252,0.96);
       color: var(--darker);
-      font-weight: 700;
-      font-size: 13px;
+      font-weight: 600;
+      font-size: 0.8rem;
     }
-    .pill i{ color: var(--primary); }
 
-    .muted{ color: var(--gray); }
-    .kpi-grid{
-      display:grid; gap: 14px;
+    .pill i { color: var(--primary); }
+
+    .muted {
+      color: var(--gray);
+    }
+
+    .kpi-grid {
+      display:grid;
+      gap: 14px;
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
     @media (min-width: 768px){
-      .kpi-grid{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .kpi-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
-    .kpi{
+
+    .kpi {
       padding: 14px;
       border-radius: var(--radius-lg);
       border: 1px solid var(--gray-light);
-      background: rgba(248,250,252,0.8);
+      background: rgba(248,250,252,0.94);
     }
-    .kpi-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
-    .kpi-label{ font-size: 13px; color: var(--gray); font-weight: 600; }
-    .kpi-icon{
-      width: 38px; height: 38px; border-radius: 12px;
-      display:flex; align-items:center; justify-content:center;
+
+    .kpi-top {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .kpi-label {
+      font-size: 0.8rem;
+      color: var(--gray);
+      font-weight: 600;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    .kpi-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       background: rgba(59,130,246,0.12);
       color: var(--primary);
+      flex-shrink:0;
     }
-    .kpi-value{ margin-top: 8px; font-size: 22px; font-weight: 900; color: var(--darker); }
 
-    .list{ display:flex; flex-direction:column; gap: 12px; }
-    .item{
+    .kpi-value {
+      margin-top: 8px;
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--darker);
+    }
+
+    .list {
+      display:flex;
+      flex-direction:column;
+      gap: 12px;
+    }
+
+    .item {
       padding: 14px;
       border-radius: var(--radius-lg);
       border: 1px solid var(--gray-light);
       background: #fff;
-      display:flex; gap: 12px; align-items:flex-start; justify-content:space-between;
+      display:flex;
+      gap: 12px;
+      align-items:flex-start;
+      justify-content:space-between;
     }
-    .item-left{ display:flex; gap: 12px; align-items:flex-start; }
-    .item-icon{
-      width: 44px; height: 44px; border-radius: 14px;
-      display:flex; align-items:center; justify-content:center;
+
+    .item-left {
+      display:flex;
+      gap: 12px;
+      align-items:flex-start;
+    }
+
+    .item-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       background: rgba(139,92,246,0.12);
       color: var(--secondary);
       flex: 0 0 auto;
     }
-    .item-title{ margin:0; font-weight: 900; color: var(--darker); }
-    .item-meta{ margin-top: 4px; font-size: 13px; color: var(--gray); }
-    .item-actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
 
-    .alert{
+    .item-title {
+      margin:0;
+      font-weight: 900;
+      color: var(--darker);
+      font-size:0.95rem;
+    }
+
+    .item-meta {
+      margin-top: 4px;
+      font-size: 0.8rem;
+      color: var(--gray);
+      max-width:40ch;
+    }
+
+    .item-actions {
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .alert {
       border-radius: var(--radius-lg);
       padding: 12px 14px;
       border: 1px solid var(--gray-light);
       background: rgba(59,130,246,0.06);
       color: var(--darker);
+      font-size:0.85rem;
     }
 
-    .logout-form{ margin:0; }
-    .logout-form button{ width: 100%; }
+    .logout-form {
+      margin:0;
+    }
+
+    .logout-form button {
+      width: 100%;
+    }
+
     @media (min-width: 992px){
-      .logout-form button{ width: auto; }
+      .logout-form button {
+        width: auto;
+      }
     }
   </style>
 </head>
 
 <body class="dash-body">
 
-{# If you already have your global fixed header, it will show.
-   If not, you can drop your existing header markup here. #}
+<header class="main-navbar">
+  <div class="nav-inner">
+    <a href="/jobs" class="nav-brand">
+      <div class="nav-logo-mark"></div>
+      <div class="nav-brand-text">
+        <span class="nav-brand-name">EliteCareer</span>
+        <span class="nav-brand-tagline">Dashboard · Candidates & Employers</span>
+      </div>
+    </a>
+
+    <div class="nav-main">
+      <nav class="nav-links">
+        <a href="/jobs" class="nav-link">Jobs</a>
+        <a href="/dashboard" class="nav-link nav-link--active">Dashboard</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="/employer/jobs" class="nav-ghost-link">
+          <i class="fa-solid fa-building-user"></i>
+          For employers
+        </a>
+        <a href="/login" class="nav-primary-btn">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          Sign in
+        </a>
+      </div>
+    </div>
+
+    <button class="nav-toggle" type="button" id="navToggle">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+
+  <div class="nav-mobile-panel" id="navMobilePanel">
+    <div class="nav-mobile-links">
+      <a href="/jobs" class="nav-mobile-link">Jobs</a>
+      <a href="/dashboard" class="nav-mobile-link">Dashboard</a>
+      <a href="/employer/jobs" class="nav-mobile-link">For employers</a>
+    </div>
+    <div class="nav-mobile-cta">
+      <a href="/login" class="nav-primary-btn">
+        <i class="fa-solid fa-right-to-bracket"></i>
+        Sign in
+      </a>
+    </div>
+  </div>
+</header>
 
 <main class="container">
   {% if user %}
@@ -138,7 +721,7 @@
     <div class="dash-header">
       <div>
         <h1 class="dash-title">
-          <i class="fa-solid fa-gauge-high" style="margin-right:10px;color:var(--primary)"></i>
+          <i class="fa-solid fa-gauge-high"></i>
           Dashboard
         </h1>
         <p class="dash-sub">
@@ -168,7 +751,9 @@
         {% endif %}
 
         <form class="logout-form" method="post" action="/logout">
-          <button class="btn btn-accent" type="submit"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+          <button class="btn btn-accent" type="submit">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
         </form>
       </div>
     </div>
@@ -185,53 +770,91 @@
           <div class="kpi-grid">
             {% if isCandidate %}
               <div class="kpi">
-                <div class="kpi-top"><div class="kpi-label">Resumes</div><div class="kpi-icon"><i class="fa-solid fa-file-lines"></i></div></div>
+                <div class="kpi-top">
+                  <div class="kpi-label">Resumes</div>
+                  <div class="kpi-icon"><i class="fa-solid fa-file-lines"></i></div>
+                </div>
                 <div class="kpi-value">{{ user.resumes is defined ? user.resumes|length : 0 }}</div>
               </div>
               <div class="kpi">
-                <div class="kpi-top"><div class="kpi-label">Applications</div><div class="kpi-icon"><i class="fa-solid fa-paper-plane"></i></div></div>
+                <div class="kpi-top">
+                  <div class="kpi-label">Applications</div>
+                  <div class="kpi-icon"><i class="fa-solid fa-paper-plane"></i></div>
+                </div>
                 <div class="kpi-value">{{ user.applications is defined ? user.applications|length : 0 }}</div>
               </div>
               <div class="kpi">
-                <div class="kpi-top"><div class="kpi-label">Profile</div><div class="kpi-icon"><i class="fa-solid fa-user"></i></div></div>
+                <div class="kpi-top">
+                  <div class="kpi-label">Profile</div>
+                  <div class="kpi-icon"><i class="fa-solid fa-user"></i></div>
+                </div>
                 <div class="kpi-value">{{ user.candidateProfile ? 'Ready' : 'Missing' }}</div>
               </div>
               <div class="kpi">
-                <div class="kpi-top"><div class="kpi-label">Account</div><div class="kpi-icon"><i class="fa-solid fa-shield-halved"></i></div></div>
+                <div class="kpi-top">
+                  <div class="kpi-label">Account</div>
+                  <div class="kpi-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                </div>
                 <div class="kpi-value">Secure</div>
               </div>
+
             {% elseif isHR %}
               <div class="kpi">
-                <div class="kpi-top"><div class="kpi-label">Company memberships</div><div class="kpi-icon"><i class="fa-solid fa-building"></i></div></div>
+                <div class="kpi-top">
+                  <div class="kpi-label">Company memberships</div>
+                  <div class="kpi-icon"><i class="fa-solid fa-building"></i></div>
+                </div>
                 <div class="kpi-value">{{ user.companyMemberships is defined ? user.companyMemberships|length : 0 }}</div>
               </div>
               <div class="kpi">
-                <div class="kpi-top"><div class="kpi-label">Jobs posted</div><div class="kpi-icon"><i class="fa-solid fa-briefcase"></i></div></div>
+                <div class="kpi-top">
+                  <div class="kpi-label">Jobs posted</div>
+                  <div class="kpi-icon"><i class="fa-solid fa-briefcase"></i></div>
+                </div>
                 <div class="kpi-value">{{ user.postedJobs is defined ? user.postedJobs|length : 0 }}</div>
               </div>
               <div class="kpi">
-                <div class="kpi-top"><div class="kpi-label">Applicants</div><div class="kpi-icon"><i class="fa-solid fa-users"></i></div></div>
+                <div class="kpi-top">
+                  <div class="kpi-label">Applicants</div>
+                  <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+                </div>
                 <div class="kpi-value">—</div>
               </div>
               <div class="kpi">
-                <div class="kpi-top"><div class="kpi-label">Pipeline</div><div class="kpi-icon"><i class="fa-solid fa-diagram-project"></i></div></div>
+                <div class="kpi-top">
+                  <div class="kpi-label">Pipeline</div>
+                  <div class="kpi-icon"><i class="fa-solid fa-diagram-project"></i></div>
+                </div>
                 <div class="kpi-value">Active</div>
               </div>
+
             {% elseif isAdmin %}
               <div class="kpi">
-                <div class="kpi-top"><div class="kpi-label">Users</div><div class="kpi-icon"><i class="fa-solid fa-users"></i></div></div>
+                <div class="kpi-top">
+                  <div class="kpi-label">Users</div>
+                  <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+                </div>
                 <div class="kpi-value">—</div>
               </div>
               <div class="kpi">
-                <div class="kpi-top"><div class="kpi-label">Companies</div><div class="kpi-icon"><i class="fa-solid fa-building"></i></div></div>
+                <div class="kpi-top">
+                  <div class="kpi-label">Companies</div>
+                  <div class="kpi-icon"><i class="fa-solid fa-building"></i></div>
+                </div>
                 <div class="kpi-value">—</div>
               </div>
               <div class="kpi">
-                <div class="kpi-top"><div class="kpi-label">Jobs</div><div class="kpi-icon"><i class="fa-solid fa-briefcase"></i></div></div>
+                <div class="kpi-top">
+                  <div class="kpi-label">Jobs</div>
+                  <div class="kpi-icon"><i class="fa-solid fa-briefcase"></i></div>
+                </div>
                 <div class="kpi-value">—</div>
               </div>
               <div class="kpi">
-                <div class="kpi-top"><div class="kpi-label">System</div><div class="kpi-icon"><i class="fa-solid fa-server"></i></div></div>
+                <div class="kpi-top">
+                  <div class="kpi-label">System</div>
+                  <div class="kpi-icon"><i class="fa-solid fa-server"></i></div>
+                </div>
                 <div class="kpi-value">OK</div>
               </div>
             {% endif %}
@@ -249,13 +872,22 @@
         <div class="dash-card">
           <div class="dash-card-head">
             {% if isCandidate %}
-              <h2 class="dash-card-title"><i class="fa-solid fa-user-graduate"></i> Candidate Center</h2>
+              <h2 class="dash-card-title">
+                <i class="fa-solid fa-user-graduate"></i>
+                Candidate Center
+              </h2>
               <a class="auth-link" href="/candidate/profile">Edit profile</a>
             {% elseif isHR %}
-              <h2 class="dash-card-title"><i class="fa-solid fa-building-user"></i> Employer Center</h2>
+              <h2 class="dash-card-title">
+                <i class="fa-solid fa-building-user"></i>
+                Employer Center
+              </h2>
               <a class="auth-link" href="/jobs/new">Post job</a>
             {% else %}
-              <h2 class="dash-card-title"><i class="fa-solid fa-shield"></i> Admin Center</h2>
+              <h2 class="dash-card-title">
+                <i class="fa-solid fa-shield"></i>
+                Admin Center
+              </h2>
               <a class="auth-link" href="/admin">Open admin</a>
             {% endif %}
           </div>
@@ -274,8 +906,12 @@
                     </div>
                   </div>
                   <div class="item-actions">
-                    <a class="btn btn-secondary" href="/candidate/resumes"><i class="fa-solid fa-folder-open"></i> Open</a>
-                    <a class="btn" href="/candidate/resumes/new"><i class="fa-solid fa-upload"></i> Upload</a>
+                    <a class="btn btn-secondary" href="/candidate/resumes">
+                      <i class="fa-solid fa-folder-open"></i> Open
+                    </a>
+                    <a class="btn" href="/candidate/resumes/new">
+                      <i class="fa-solid fa-upload"></i> Upload
+                    </a>
                   </div>
                 </div>
 
@@ -290,8 +926,12 @@
                     </div>
                   </div>
                   <div class="item-actions">
-                    <a class="btn btn-secondary" href="/candidate/applications"><i class="fa-solid fa-list-check"></i> Track</a>
-                    <a class="btn" href="/jobs"><i class="fa-solid fa-magnifying-glass"></i> Apply</a>
+                    <a class="btn btn-secondary" href="/candidate/applications">
+                      <i class="fa-solid fa-list-check"></i> Track
+                    </a>
+                    <a class="btn" href="/jobs">
+                      <i class="fa-solid fa-magnifying-glass"></i> Apply
+                    </a>
                   </div>
                 </div>
 
@@ -306,7 +946,9 @@
                     </div>
                   </div>
                   <div class="item-actions">
-                    <a class="btn btn-secondary" href="/candidate/alerts"><i class="fa-solid fa-bell"></i> Configure</a>
+                    <a class="btn btn-secondary" href="/candidate/alerts">
+                      <i class="fa-solid fa-bell"></i> Configure
+                    </a>
                   </div>
                 </div>
               </div>
@@ -322,7 +964,9 @@
                     </div>
                   </div>
                   <div class="item-actions">
-                    <a class="btn" href="/jobs/new"><i class="fa-solid fa-plus"></i> New Job</a>
+                    <a class="btn" href="/jobs/new">
+                      <i class="fa-solid fa-plus"></i> New Job
+                    </a>
                   </div>
                 </div>
 
@@ -335,7 +979,9 @@
                     </div>
                   </div>
                   <div class="item-actions">
-                    <a class="btn btn-secondary" href="/employer/jobs"><i class="fa-solid fa-pen-to-square"></i> Manage</a>
+                    <a class="btn btn-secondary" href="/employer/jobs">
+                      <i class="fa-solid fa-pen-to-square"></i> Manage
+                    </a>
                   </div>
                 </div>
 
@@ -348,7 +994,9 @@
                     </div>
                   </div>
                   <div class="item-actions">
-                    <a class="btn btn-secondary" href="/employer/applicants"><i class="fa-solid fa-list-check"></i> View</a>
+                    <a class="btn btn-secondary" href="/employer/applicants">
+                      <i class="fa-solid fa-list-check"></i> View
+                    </a>
                   </div>
                 </div>
               </div>
@@ -364,7 +1012,9 @@
                     </div>
                   </div>
                   <div class="item-actions">
-                    <a class="btn" href="/admin/users"><i class="fa-solid fa-users"></i> Open</a>
+                    <a class="btn" href="/admin/users">
+                      <i class="fa-solid fa-users"></i> Open
+                    </a>
                   </div>
                 </div>
 
@@ -377,7 +1027,9 @@
                     </div>
                   </div>
                   <div class="item-actions">
-                    <a class="btn btn-secondary" href="/admin/companies"><i class="fa-solid fa-circle-check"></i> Review</a>
+                    <a class="btn btn-secondary" href="/admin/companies">
+                      <i class="fa-solid fa-circle-check"></i> Review
+                    </a>
                   </div>
                 </div>
 
@@ -390,7 +1042,9 @@
                     </div>
                   </div>
                   <div class="item-actions">
-                    <a class="btn btn-secondary" href="/admin/jobs"><i class="fa-solid fa-shield"></i> Moderate</a>
+                    <a class="btn btn-secondary" href="/admin/jobs">
+                      <i class="fa-solid fa-shield"></i> Moderate
+                    </a>
                   </div>
                 </div>
               </div>
@@ -401,7 +1055,10 @@
         {# Right column: profile + memberships #}
         <div class="dash-card">
           <div class="dash-card-head">
-            <h2 class="dash-card-title"><i class="fa-solid fa-id-badge"></i> Account</h2>
+            <h2 class="dash-card-title">
+              <i class="fa-solid fa-id-badge"></i>
+              Account
+            </h2>
             <a class="auth-link" href="/account">Settings</a>
           </div>
           <div class="dash-card-body">
@@ -444,7 +1101,9 @@
                           </div>
                         </div>
                         <div class="item-actions">
-                          <a class="btn btn-secondary" href="/companies/{{ m.company.id|default('') }}"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open</a>
+                          <a class="btn btn-secondary" href="/companies/{{ m.company.id|default('') }}">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Open
+                          </a>
                         </div>
                       </div>
                     {% endfor %}
@@ -475,13 +1134,29 @@
   {% else %}
     <div class="dash-card" style="margin-top:120px">
       <div class="dash-card-body">
-        <h1 class="dash-title">You are not authenticated</h1>
+        <h1 class="dash-title">
+          <i class="fa-solid fa-lock"></i>
+          You are not authenticated
+        </h1>
         <p class="dash-sub">Please log in to access your dashboard.</p>
-        <a class="btn" href="/login"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+        <a class="btn btn-accent" href="/login">
+          <i class="fa-solid fa-right-to-bracket"></i> Login
+        </a>
       </div>
     </div>
   {% endif %}
 </main>
+
+<script>
+  (function () {
+    const toggle = document.getElementById('navToggle');
+    const panel = document.getElementById('navMobilePanel');
+    if (!toggle || !panel) return;
+    toggle.addEventListener('click', function () {
+      panel.classList.toggle('nav-mobile-panel--open');
+    });
+  })();
+</script>
 
 </body>
 </html>

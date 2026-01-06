@@ -1,0 +1,1502 @@
+{# templates/employer/applicant_show.html.twig #}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Applicant | EliteCareer</title>
+
+  {# Fonts & icons #}
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #3b82f6;
+      --primary-soft: rgba(37, 99, 235, 0.08);
+      --primary-dark: #1d4ed8;
+
+      --success: #16a34a;
+      --error: #ef4444;
+
+      --darker: #020617;
+      --dark: #0f172a;
+      --light: #f3f4f6;
+
+      --gray: #6b7280;
+      --gray-dark: #4b5563;
+      --gray-light: #e5e7eb;
+      --gray-lighter: #f9fafb;
+
+      --radius: 8px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+
+      --shadow-sm: 0 4px 10px rgba(15, 23, 42, 0.10);
+      --shadow: 0 10px 25px rgba(15, 23, 42, 0.14);
+      --shadow-lg: 0 18px 45px rgba(15, 23, 42, 0.20);
+
+      --transition: 150ms ease;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #e5f0ff 0, #f3f4f6 38%, #e5e7eb 100%);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--dark);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* =========================
+       NAVBAR
+       ========================= */
+    .main-navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: linear-gradient(
+        to bottom,
+        rgba(15, 23, 42, 0.96),
+        rgba(15, 23, 42, 0.92),
+        rgba(15, 23, 42, 0.88)
+      );
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.75);
+    }
+
+    .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .nav-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 0% 0%, #38bdf8, #6366f1 40%, #ec4899 80%);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.6);
+    }
+
+    .nav-brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .nav-brand-name {
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      font-size: 1.12rem;
+      font-weight: 800;
+      color: #f9fafb;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-brand-tagline {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: rgba(148, 163, 184, 0.95);
+    }
+
+    .nav-main {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .nav-link {
+      position: relative;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: rgba(209, 213, 219, 0.96);
+      text-decoration: none;
+      padding: 6px 0;
+      transition: color var(--transition);
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #3b82f6, #a855f7, #ec4899);
+      transition: width 160ms ease;
+    }
+
+    .nav-link:hover {
+      color: #ffffff;
+    }
+
+    .nav-link:hover::after,
+    .nav-link--active::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-ghost-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: rgba(209, 213, 219, 0.95);
+      text-decoration: none;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.8);
+      transition: background var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+
+    .nav-ghost-link i {
+      font-size: 0.85rem;
+    }
+
+    .nav-ghost-link:hover {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: rgba(209, 213, 219, 0.8);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-primary-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.86rem;
+      font-weight: 700;
+      text-decoration: none;
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      color: #0f172a;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.65);
+      transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+    }
+
+    .nav-primary-btn i {
+      font-size: 0.9rem;
+    }
+
+    .nav-primary-btn:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.85);
+    }
+
+    .nav-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.92);
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition), transform var(--transition);
+    }
+
+    .nav-toggle i {
+      font-size: 1rem;
+    }
+
+    .nav-toggle:hover {
+      background: rgba(15, 23, 42, 0.99);
+      border-color: rgba(209, 213, 219, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .nav-mobile-panel {
+      display: none;
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      padding: 10px 16px 14px;
+      background: rgba(15, 23, 42, 0.98);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.85);
+    }
+
+    .nav-mobile-links {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .nav-mobile-link {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: rgba(209, 213, 219, 0.97);
+      text-decoration: none;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .nav-mobile-link:hover {
+      background: rgba(31, 41, 55, 0.95);
+      color: #ffffff;
+    }
+
+    .nav-mobile-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nav-mobile-panel.nav-mobile-panel--open {
+      display: block;
+    }
+
+    @media (max-width: 900px) {
+      .nav-main {
+        display: none;
+      }
+
+      .nav-toggle {
+        display: inline-flex;
+      }
+    }
+
+    /* =========================
+       PAGE LAYOUT
+       ========================= */
+    .shell {
+      padding: 120px 20px 80px; /* leave room for navbar */
+    }
+
+    .inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .hdr {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      margin-bottom:24px;
+      flex-wrap:wrap;
+    }
+
+    .title {
+      font-family:'Plus Jakarta Sans',sans-serif;
+      font-size:2rem;
+      font-weight:800;
+      color:var(--darker);
+      margin:0 0 4px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .title-icon {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+
+    .sub {
+      color:var(--gray);
+      font-size:0.95rem;
+      margin:0;
+    }
+
+    .sub strong {
+      color: var(--dark);
+    }
+
+    .actions {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .btn {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:0.85rem;
+      font-weight:500;
+      text-decoration:none;
+      cursor:pointer;
+      transition:background var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition), color var(--transition);
+      border:1px solid transparent;
+    }
+
+    .btn i {
+      font-size:0.85rem;
+    }
+
+    .btn-secondary {
+      background:rgba(248,250,252,0.96);
+      border-color:rgba(148,163,184,0.7);
+      color:rgba(55,65,81,0.98);
+    }
+
+    .btn-secondary:hover {
+      background:#ffffff;
+      border-color:rgba(148,163,184,0.95);
+      transform:translateY(-1px);
+      box-shadow:var(--shadow-sm);
+    }
+
+    .btn-accent {
+      background:linear-gradient(135deg,#3b82f6,#6366f1);
+      border-color:rgba(37,99,235,0.2);
+      color:#f9fafb;
+      box-shadow:0 10px 30px rgba(37,99,235,0.4);
+    }
+
+    .btn-accent:hover {
+      filter:brightness(1.05);
+      transform:translateY(-1px);
+      box-shadow:0 14px 38px rgba(37,99,235,0.6);
+    }
+
+    .grid {
+      display:grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap:18px 24px;
+    }
+
+    @media (max-width: 768px) {
+      .shell { padding: 110px 16px 60px; }
+      .grid { grid-template-columns:1fr; }
+    }
+
+    .card {
+      background:#ffffff;
+      border-radius:var(--radius-xl);
+      border:1px solid var(--gray-light);
+      box-shadow:var(--shadow);
+      padding:18px 20px 16px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .card--accent::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(500px 220px at -10% 0%, rgba(59,130,246,0.18), transparent 58%),
+        radial-gradient(460px 220px at 110% 0%, rgba(236,72,153,0.12), transparent 60%);
+      opacity:0.9;
+      pointer-events:none;
+    }
+
+    .card-inner {
+      position:relative;
+      z-index:1;
+    }
+
+    .card h2 {
+      margin:0 0 10px;
+      font-size:1rem;
+      font-weight:700;
+      color:var(--darker);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+      font-size:0.9rem;
+    }
+
+    .card h2 i {
+      color:var(--primary);
+    }
+
+    .card h3 {
+      margin:10px 0 4px;
+      font-size:0.9rem;
+      font-weight:600;
+      color:var(--darker);
+    }
+
+    .meta-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 16px;
+      font-size:0.85rem;
+      color:var(--gray-dark);
+    }
+
+    .status-pill {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:0.78rem;
+      font-weight:600;
+      background:rgba(248,250,252,0.98);
+      border:1px solid rgba(148,163,184,0.7);
+      color:var(--gray-dark);
+    }
+
+    .status-pill--accepted {
+      background:rgba(16,185,129,0.09);
+      border-color:rgba(16,185,129,0.5);
+      color:var(--success);
+    }
+
+    .status-pill--rejected {
+      background:rgba(239,68,68,0.09);
+      border-color:rgba(239,68,68,0.55);
+      color:var(--error);
+    }
+
+    .badge {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:3px 9px;
+      border-radius:999px;
+      font-size:0.78rem;
+      border:1px solid var(--gray-light);
+      color:var(--gray-dark);
+      background:rgba(148,163,184,0.08);
+    }
+
+    .badge--hire {
+      background:rgba(16,185,129,0.08);
+      border-color:rgba(16,185,129,0.4);
+      color:var(--success);
+    }
+
+    .badge--reject {
+      background:rgba(239,68,68,0.08);
+      border-color:rgba(239,68,68,0.4);
+      color:var(--error);
+    }
+
+    .score-table {
+      width:100%;
+      border-collapse:collapse;
+      font-size:0.85rem;
+      margin-top:8px;
+    }
+
+    .score-table th,
+    .score-table td {
+      padding:4px 6px;
+      border-bottom:1px solid var(--gray-lighter);
+      text-align:left;
+    }
+
+    .score-table th {
+      background:rgba(248,250,252,0.9);
+      font-weight:600;
+      color:var(--gray);
+      text-transform:uppercase;
+      letter-spacing:0.04em;
+      font-size:0.75rem;
+    }
+
+    .pill-list {
+      font-size:0.82rem;
+      color:var(--gray-dark);
+      margin:6px 0 0;
+      padding-left:18px;
+    }
+
+    .pill-list li {
+      margin-bottom:2px;
+    }
+
+    .alert {
+      padding:10px 12px;
+      border-radius:var(--radius);
+      font-size:0.85rem;
+      margin-bottom:10px;
+    }
+
+    .alert--error {
+      background:rgba(239,68,68,0.08);
+      border:1px solid rgba(239,68,68,0.4);
+      color:var(--error);
+    }
+
+    .alert--info {
+      background:rgba(59,130,246,0.06);
+      border:1px solid rgba(59,130,246,0.3);
+      color:var(--primary-dark);
+    }
+
+    pre.logs {
+      background:#020617;
+      color:#e5e7eb;
+      padding:10px 12px;
+      border-radius:var(--radius);
+      font-size:0.75rem;
+      max-height:220px;
+      overflow:auto;
+      margin-top:8px;
+    }
+
+    .section-label {
+      font-size:0.82rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+      color:var(--gray);
+      margin-bottom:4px;
+    }
+
+    .divider {
+      height:1px;
+      background:var(--gray-lighter);
+      margin:8px 0;
+      opacity:0.8;
+    }
+
+    /* HR DECISION BLOCK INSIDE AI CARD */
+    .hr-actions {
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:14px;
+      background:linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,0.92));
+      border:1px solid rgba(248, 250, 252, 0.16);
+      box-shadow:0 12px 30px rgba(15,23,42,0.45);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      color:#e5e7eb;
+    }
+
+    .hr-title {
+      font-size:0.86rem;
+      font-weight:700;
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .hr-title i {
+      color:#fde68a;
+      font-size:0.9rem;
+    }
+
+    .hr-text {
+      font-size:0.8rem;
+      opacity:0.9;
+      line-height:1.45;
+    }
+
+    .hr-btn-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:4px;
+    }
+
+    .hr-btn {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 14px;
+      border-radius:999px;
+      border:none;
+      cursor:pointer;
+      font-size:0.82rem;
+      font-weight:600;
+      text-decoration:none;
+      transition:transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
+    }
+
+    .hr-btn i {
+      font-size:0.9rem;
+    }
+
+    .hr-btn--accept {
+      background:linear-gradient(135deg,#22c55e,#4ade80);
+      color:#022c22;
+      box-shadow:0 10px 25px rgba(22,163,74,0.55);
+    }
+
+    .hr-btn--accept:hover {
+      filter:brightness(1.05);
+      transform:translateY(-1px);
+      box-shadow:0 14px 35px rgba(22,163,74,0.7);
+    }
+
+    .hr-btn--reject {
+      background:linear-gradient(135deg,#ef4444,#fb7185);
+      color:#450a0a;
+      box-shadow:0 10px 25px rgba(248,113,113,0.55);
+    }
+
+    .hr-btn--reject:hover {
+      filter:brightness(1.05);
+      transform:translateY(-1px);
+      box-shadow:0 14px 35px rgba(248,113,113,0.7);
+    }
+
+    .hr-hint {
+      font-size:0.75rem;
+      opacity:0.85;
+    }
+
+    /* INTERVIEW SCHEDULING BLOCK */
+    .interview-block {
+      margin-top:12px;
+      padding:12px 12px 10px;
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,0.4);
+      background:rgba(15,23,42,0.7);
+      color:#e5e7eb;
+    }
+
+    .interview-title {
+      font-size:0.84rem;
+      font-weight:700;
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:8px;
+    }
+
+    .interview-title i {
+      color:#a5b4fc;
+    }
+
+    .interview-grid {
+      display:grid;
+      grid-template-columns:minmax(0,1fr);
+      gap:8px;
+      margin-bottom:6px;
+      font-size:0.8rem;
+    }
+
+    .interview-grid label {
+      display:block;
+      margin-bottom:2px;
+      font-weight:500;
+      opacity:0.9;
+    }
+
+    .interview-grid input,
+    .interview-grid select,
+    .interview-grid textarea {
+      width:100%;
+      border-radius:10px;
+      border:1px solid rgba(148,163,184,0.7);
+      padding:6px 8px;
+      font-size:0.8rem;
+      background:rgba(15,23,42,0.95);
+      color:#e5e7eb;
+      outline:none;
+    }
+
+    .interview-grid textarea {
+      min-height:60px;
+      resize:vertical;
+    }
+
+    .interview-grid input:focus,
+    .interview-grid select:focus,
+    .interview-grid textarea:focus {
+      border-color:#a5b4fc;
+      box-shadow:0 0 0 1px rgba(129,140,248,0.7);
+    }
+
+    .interview-submit {
+      margin-top:6px;
+      display:flex;
+      justify-content:flex-end;
+    }
+
+    .interview-submit button {
+      background:linear-gradient(135deg,#38bdf8,#6366f1);
+      color:#0f172a;
+      border:none;
+      border-radius:999px;
+      padding:7px 14px;
+      font-size:0.8rem;
+      font-weight:600;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      cursor:pointer;
+      box-shadow:0 10px 25px rgba(59,130,246,0.6);
+      transition:transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
+    }
+
+    .interview-submit button:hover {
+      transform:translateY(-1px);
+      filter:brightness(1.05);
+      box-shadow:0 14px 35px rgba(59,130,246,0.8);
+    }
+    .ai-summary-card {
+  margin-top: 10px;
+  padding: 12px 14px 10px;
+  border-radius: 14px;
+  background: rgba(248, 250, 252, 0.96);
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  box-shadow: var(--shadow-sm);
+  font-size: 0.85rem;
+}
+
+.ai-summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.ai-summary-label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: var(--gray);
+}
+
+.ai-summary-decision {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.ai-summary-decision--hire {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+}
+
+.ai-summary-decision--reject {
+  background: rgba(239, 68, 68, 0.08);
+  color: var(--error);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.ai-summary-decision--neutral {
+  background: rgba(59, 130, 246, 0.08);
+  color: var(--primary-dark);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.ai-summary-score-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.ai-summary-overall {
+  min-width: 90px;
+  height: 90px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 0%, #dbeafe, #eff6ff);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-summary-overall-main {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+  line-height: 1;
+}
+
+.ai-summary-overall-caption {
+  font-size: 0.72rem;
+  color: var(--gray-dark);
+}
+
+.ai-summary-bars {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ai-summary-bar-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 36px;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+}
+
+.ai-summary-bar-track {
+  background: var(--gray-lighter);
+  border-radius: 999px;
+  overflow: hidden;
+  height: 6px;
+}
+
+.ai-summary-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #6366f1);
+}
+
+.ai-summary-bar-value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--gray-dark);
+}
+
+.ai-summary-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.ai-summary-col h3 {
+  margin: 0 0 4px;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gray-dark);
+}
+
+.ai-summary-muted {
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+
+.ai-summary-disclaimer {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--gray);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
+  </style>
+</head>
+<body class="dash-body">
+
+<header class="main-navbar">
+  <div class="nav-inner">
+    <a href="{{ path('web_employer_applicants') }}" class="nav-brand">
+      <div class="nav-logo-mark"></div>
+      <div class="nav-brand-text">
+        <span class="nav-brand-name">EliteCareer</span>
+        <span class="nav-brand-tagline">Employer · Smart applicant screening</span>
+      </div>
+    </a>
+
+    <div class="nav-main">
+      <nav class="nav-links">
+        <a href="{{ path('web_employer_applicants') }}" class="nav-link nav-link--active">Applicants</a>
+        <a href="#" class="nav-link">Jobs</a>
+        <a href="#" class="nav-link">Insights</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="/login" class="nav-ghost-link">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          Employer login
+        </a>
+        <a href="/employer/jobs/new" class="nav-primary-btn">
+          <i class="fa-solid fa-bullhorn"></i>
+          Post a job
+        </a>
+      </div>
+    </div>
+
+    <button class="nav-toggle" type="button" id="navToggle">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+
+  <div class="nav-mobile-panel" id="navMobilePanel">
+    <div class="nav-mobile-links">
+      <a href="{{ path('web_employer_applicants') }}" class="nav-mobile-link">Applicants</a>
+      <a href="#" class="nav-mobile-link">Jobs</a>
+      <a href="#" class="nav-mobile-link">Insights</a>
+    </div>
+    <div class="nav-mobile-cta">
+      <a href="/login" class="nav-ghost-link">
+        <i class="fa-solid fa-right-to-bracket"></i>
+        Employer login
+      </a>
+      <a href="/employer/jobs/new" class="nav-primary-btn">
+        <i class="fa-solid fa-bullhorn"></i>
+        Post a job
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+  <div class="inner">
+
+    {# ================= HEADER ================= #}
+    {% set displayName = candidate is defined and candidate
+        ? (candidate.fullName ?? candidate.email ?? 'Candidate')
+        : 'Candidate'
+    %}
+
+    <header class="hdr">
+      <div>
+        <h1 class="title">
+          <i class="fa-solid fa-user-tie title-icon"></i>
+          {{ displayName }}
+        </h1>
+        <p class="sub">
+          Applicant for <strong>{{ job.title }}</strong>
+          {% if job.location %}
+            &middot; {{ job.location }}
+          {% endif %}
+        </p>
+      </div>
+      <div class="actions">
+        <a href="{{ path('web_employer_applicants') }}" class="btn btn-secondary">
+          <i class="fa-solid fa-arrow-left"></i> Back to list
+        </a>
+
+        {# GET ?refresh=1 => triggers AI eval in controller #}
+        <a href="{{ path('web_employer_applicant_show', {id: application.id, refresh: 1}) }}"
+           class="btn btn-accent">
+          <i class="fa-solid fa-rotate"></i> Re-run AI evaluation
+        </a>
+      </div>
+    </header>
+
+    <div class="grid">
+      {# ================= LEFT COLUMN: Candidate & job ================= #}
+      <section class="card">
+        <div class="card-inner">
+          <h2>
+            <i class="fa-solid fa-id-card-clip"></i>
+            Candidate & application
+          </h2>
+
+          <p style="font-size:0.9rem;margin-bottom:8px;">
+            <strong>{{ displayName }}</strong><br>
+            {% if candidate and candidate.email %}
+              <span style="font-size:0.85rem;color:var(--gray);">
+                {{ candidate.email }}
+              </span>
+            {% endif %}
+          </p>
+
+          <div class="meta-row" style="margin-bottom:10px;align-items:center;">
+            {% set appStatus = application.status|upper %}
+            {% set statusClass =
+              appStatus in ['ACCEPTED','HIRED','INTERVIEW_SCHEDULED'] ? 'status-pill--accepted' :
+              (appStatus in ['REJECTED','DECLINED'] ? 'status-pill--rejected' : '')
+            %}
+            <span>
+              <span class="section-label">Application status</span><br>
+              <span class="status-pill {{ statusClass }}">
+                <i class="fa-solid fa-circle"></i>
+                {{ application.status }}
+              </span>
+            </span>
+            <span>
+              <span class="section-label">Applied</span><br>
+              {{ application.appliedAt ? application.appliedAt|date('Y-m-d H:i') : '—' }}
+            </span>
+          </div>
+
+          <div class="divider"></div>
+
+          <h3>Job</h3>
+          <p style="font-size:0.85rem;color:var(--gray-dark);">
+            {{ job.title }}
+            {% if job.location %} &middot; {{ job.location }}{% endif %}<br>
+            <span style="font-size:0.8rem;color:var(--gray);">
+              {{ job.employmentType ?? '' }}{% if job.employmentType and job.workMode %} · {% endif %}
+              {{ job.workMode ?? '' }}
+            </span>
+          </p>
+
+          {% if job.description %}
+            <h3>Job description (excerpt)</h3>
+            <p style="font-size:0.85rem;color:var(--gray-dark);max-height:140px;overflow:auto;white-space:pre-wrap;">
+              {{ job.description }}
+            </p>
+          {% endif %}
+
+          {% if job.requirements %}
+            <h3>Requirements (excerpt)</h3>
+            <p style="font-size:0.85rem;color:var(--gray-dark);max-height:140px;overflow:auto;white-space:pre-wrap;">
+              {{ job.requirements }}
+            </p>
+          {% endif %}
+
+          {% if application.coverLetter %}
+            <h3>Cover letter</h3>
+            <p style="font-size:0.85rem;white-space:pre-wrap;color:var(--gray-dark);max-height:200px;overflow:auto;">
+              {{ application.coverLetter }}
+            </p>
+          {% endif %}
+        </div>
+      </section>
+
+      {# ================= RIGHT COLUMN: AI evaluation + HR ================= #}
+      <section class="card card--accent">
+        <div class="card-inner">
+          <h2>
+            <i class="fa-solid fa-robot"></i>
+            AI evaluation
+          </h2>
+
+          {# Show error from PHP if something went wrong calling Python #}
+          {% if aiError %}
+            <div class="alert alert--error">
+              <strong><i class="fa-solid fa-triangle-exclamation"></i> AI error:</strong>
+              {{ aiError }}
+            </div>
+          {% endif %}
+
+          {% if aiResult %}
+            {# Detect if we have structured JSON (decision + match_scores) #}
+            {% set hasScores = aiResult.match_scores is defined %}
+            {% set hasDecision = aiResult.decision is defined %}
+            {% set hasRaw = aiResult.raw_model_output is defined %}
+
+            {% if hasScores or hasDecision %}
+              {# ======== STRUCTURED RESULT: use scores & decision from JSON ======== #}
+              {% set scores = aiResult.match_scores ?? {} %}
+              {% set skills = scores.skills ?? 0 %}
+              {% set edu    = scores.education ?? 0 %}
+              {% set exp    = scores.experience ?? 0 %}
+              {% set overall = scores.overall is defined ? scores.overall : (0.5*skills + 0.25*edu + 0.25*exp)|round %}
+
+              {% set decision = aiResult.decision ?? '' %}
+              {% set decisionUpper = decision is not empty ? decision|upper : '' %}
+
+              <div style="margin-bottom:10px;">
+              <span class="badge
+                {% if decisionUpper == 'HIRE' %}badge--hire{% elseif decisionUpper == 'REJECT' %}badge--reject{% endif %}
+              ">
+                {% if decision %}
+                  AI suggestion: {{ decision }}
+                {% else %}
+                  AI suggestion: Unknown
+                {% endif %}
+              </span>
+                <span style="margin-left:8px;font-size:0.85rem;color:var(--gray-dark);">
+                Overall match: <strong>{{ overall }}/100</strong>
+              </span>
+              </div>
+
+              <table class="score-table">
+                <thead>
+                <tr>
+                  <th>Dimension</th>
+                  <th>Score</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>Skills</td>
+                  <td>{{ skills }}/100</td>
+                </tr>
+                <tr>
+                  <td>Education</td>
+                  <td>{{ edu }}/100</td>
+                </tr>
+                <tr>
+                  <td>Experience</td>
+                  <td>{{ exp }}/100</td>
+                </tr>
+                <tr>
+                  <td><strong>Overall</strong></td>
+                  <td><strong>{{ overall }}/100</strong></td>
+                </tr>
+                </tbody>
+              </table>
+{# ===== HR-friendly AI summary ===== #}
+
+{% set missing = aiResult.missing_requirements ?? [] %}
+{% set ev = aiResult.evidence ?? {} %}
+{% set ev_sk = ev.skills ?? [] %}
+{% set ev_ed = ev.education ?? [] %}
+{% set ev_ex = ev.experience ?? [] %}
+
+<div class="ai-summary-card">
+
+  <div class="ai-summary-header">
+    <span class="ai-summary-label">AI recommendation</span>
+
+    <span class="ai-summary-decision
+      {% if decisionUpper == 'HIRE' %}ai-summary-decision--hire
+      {% elseif decisionUpper == 'REJECT' %}ai-summary-decision--reject
+      {% else %}ai-summary-decision--neutral{% endif %}
+    ">
+      {% if decisionUpper == 'HIRE' %}
+        <i class="fa-solid fa-thumbs-up"></i> Hire
+      {% elseif decisionUpper == 'REJECT' %}
+        <i class="fa-solid fa-circle-xmark"></i> Reject
+      {% else %}
+        <i class="fa-solid fa-question-circle"></i> No clear recommendation
+      {% endif %}
+    </span>
+  </div>
+
+  <div class="ai-summary-score-row">
+    <div class="ai-summary-overall">
+      <div class="ai-summary-overall-main">
+        {{ overall }}
+      </div>
+      <div class="ai-summary-overall-caption">
+        Overall match /100
+      </div>
+    </div>
+
+    <div class="ai-summary-bars">
+      <div class="ai-summary-bar-row">
+        <span>Skills</span>
+        <div class="ai-summary-bar-track">
+          <div class="ai-summary-bar-fill" style="width: {{ skills }}%;"></div>
+        </div>
+        <span class="ai-summary-bar-value">{{ skills }}</span>
+      </div>
+      <div class="ai-summary-bar-row">
+        <span>Education</span>
+        <div class="ai-summary-bar-track">
+          <div class="ai-summary-bar-fill" style="width: {{ edu }}%;"></div>
+        </div>
+        <span class="ai-summary-bar-value">{{ edu }}</span>
+      </div>
+      <div class="ai-summary-bar-row">
+        <span>Experience</span>
+        <div class="ai-summary-bar-track">
+          <div class="ai-summary-bar-fill" style="width: {{ exp }}%;"></div>
+        </div>
+        <span class="ai-summary-bar-value">{{ exp }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-summary-columns">
+    <div class="ai-summary-col">
+      <h3>Strengths</h3>
+      {% set strengths = ev_sk|merge(ev_ed)|merge(ev_ex) %}
+      {% if strengths is not empty %}
+        <ul class="pill-list">
+          {% for s in strengths %}
+            <li>{{ s }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="ai-summary-muted">No explicit strengths extracted.</p>
+      {% endif %}
+    </div>
+
+    <div class="ai-summary-col">
+      <h3>Key gaps vs job requirements</h3>
+      {% if missing is not empty %}
+        <ul class="pill-list">
+          {% for m in missing %}
+            <li>{{ m }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="ai-summary-muted">No missing requirements listed.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if aiResult.notes is defined and aiResult.notes %}
+    <div class="divider" style="margin-top:10px;"></div>
+    <h3>AI rationale</h3>
+    <p style="font-size:0.85rem;color:var(--gray-dark);white-space:pre-wrap;">
+      {{ aiResult.notes }}
+    </p>
+  {% endif %}
+
+  <p class="ai-summary-disclaimer">
+    <i class="fa-solid fa-scale-balanced"></i>
+    This is an AI suggestion only. The final hiring decision is entirely up to you.
+  </p>
+</div>
+
+{# Optional: keep raw JSON only for debugging #}
+{% if aiResult %}
+  <details style="margin-top:8px;font-size:0.8rem;">
+    <summary>Developer view: raw AI JSON</summary>
+    <pre class="logs">
+{{ aiResult|json_encode(constant('JSON_PRETTY_PRINT')) }}
+    </pre>
+  </details>
+{% endif %}
+
+              {# Evidence #}
+              {% set ev = aiResult.evidence ?? {} %}
+              {% set ev_sk = ev.skills ?? [] %}
+              {% set ev_ed = ev.education ?? [] %}
+              {% set ev_ex = ev.experience ?? [] %}
+
+              <h3>Evidence — Skills</h3>
+              {% if ev_sk is not empty %}
+                <ul class="pill-list">
+                  {% for text in ev_sk %}
+                    <li>{{ text }}</li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p style="font-size:0.8rem;color:var(--gray-dark);">No skills evidence provided.</p>
+              {% endif %}
+
+              <h3>Evidence — Education</h3>
+              {% if ev_ed is not empty %}
+                <ul class="pill-list">
+                  {% for text in ev_ed %}
+                    <li>{{ text }}</li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p style="font-size:0.8rem;color:var(--gray-dark);">No education evidence provided.</p>
+              {% endif %}
+
+              <h3>Evidence — Experience</h3>
+              {% if ev_ex is not empty %}
+                <ul class="pill-list">
+                  {% for text in ev_ex %}
+                    <li>{{ text }}</li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p style="font-size:0.8rem;color:var(--gray-dark);">No experience evidence provided.</p>
+              {% endif %}
+
+              {# Notes (free text from model) #}
+              {% if aiResult.notes is defined and aiResult.notes %}
+                <h3>Notes</h3>
+                <p style="font-size:0.85rem;color:var(--gray-dark);white-space:pre-wrap;">
+                  {{ aiResult.notes }}
+                </p>
+              {% endif %}
+
+            {% elseif hasRaw %}
+              {# ======== ONLY RAW MODEL OUTPUT (fallback) ======== #}
+              <div class="alert alert--info">
+                <strong>Structured JSON not detected.</strong><br>
+                Showing raw model output from the AI engine.
+              </div>
+
+              <h3>ℹ️ Raw model output</h3>
+              <pre style="white-space:pre-wrap;font-size:0.78rem;background:#f8fafc;border-radius:var(--radius);padding:8px 10px;max-height:260px;overflow:auto;">
+{{ aiResult.raw_model_output }}
+              </pre>
+
+            {% else %}
+              {# ======== Unknown shape (safety net) ======== #}
+              <div class="alert alert--info">
+                <strong>AI result received, but unexpected format.</strong><br>
+                See raw JSON below.
+              </div>
+            {% endif %}
+
+            {# Pretty Markdown from Python (rendered as plain text inside <pre>) #}
+            {% if ai_pretty %}
+              <h3>Model summary (markdown)</h3>
+              <pre style="white-space:pre-wrap;font-size:0.78rem;background:#f8fafc;border-radius:var(--radius);padding:8px 10px;max-height:220px;overflow:auto;">
+{{ ai_pretty }}
+              </pre>
+            {% endif %}
+
+          {% else %}
+            {# No AI result yet #}
+            <div class="alert alert--info">
+              <strong><i class="fa-solid fa-circle-info"></i> No AI evaluation yet.</strong><br>
+              Click <em>Re-run AI evaluation</em> above to send the job offer text and the candidate’s CV
+              to the smart hiring engine.
+            </div>
+          {% endif %}
+
+          {# ========= HR DECISION BUTTONS ========= #}
+          <div class="hr-actions">
+            <div class="hr-title">
+              <i class="fa-solid fa-user-check"></i>
+              HR decision
+            </div>
+            <p class="hr-text">
+              Use these buttons to record your final decision for this applicant on this job.
+              The AI score above is only a recommendation.
+            </p>
+            <div class="hr-btn-row">
+              <form method="post" action="{{ path('web_employer_applicant_accept', {id: application.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('hr_decision_' ~ application.id) }}">
+                <button type="submit" class="hr-btn hr-btn--accept">
+                  <i class="fa-solid fa-check"></i>
+                  Accept applicant
+                </button>
+              </form>
+              <form method="post" action="{{ path('web_employer_applicant_reject', {id: application.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('hr_decision_' ~ application.id) }}">
+                <button type="submit" class="hr-btn hr-btn--reject">
+                  <i class="fa-solid fa-xmark"></i>
+                  Reject applicant
+                </button>
+              </form>
+            </div>
+            <div class="hr-hint">
+              Status changes are stored on the <code>Application</code> entity.
+            </div>
+          </div>
+
+          {# ========= INTERVIEW SCHEDULING (after acceptance) ========= #}
+          {% if application.status in ['ACCEPTED', 'INTERVIEW_SCHEDULED'] %}
+            <div class="interview-block">
+              <div class="interview-title">
+                <i class="fa-solid fa-calendar-check"></i>
+                Schedule interview
+              </div>
+              <p class="hr-text" style="margin-bottom:6px;">
+                Define the interview date, mode and location for this candidate.
+              </p>
+
+              <form method="post" action="{{ path('web_employer_applicant_schedule', {id: application.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('schedule_interview_' ~ application.id) }}">
+
+                <div class="interview-grid">
+                  <div>
+                    <label for="interview_at">Interview date & time</label>
+                    <input
+                      type="datetime-local"
+                      id="interview_at"
+                      name="interview_at"
+                      value="{{ application.interviewAt ? application.interviewAt|date('Y-m-d\\TH:i') : '' }}"
+                      required
+                    >
+                  </div>
+
+                  <div>
+                    <label for="interview_mode">Mode</label>
+                    <select id="interview_mode" name="interview_mode">
+                      {% set im = application.interviewMode ?? '' %}
+                      <option value="" {% if im == '' %}selected{% endif %}>Choose...</option>
+                      <option value="On-site" {% if im == 'On-site' %}selected{% endif %}>On-site</option>
+                      <option value="Remote" {% if im == 'Remote' %}selected{% endif %}>Remote (video)</option>
+                      <option value="Phone" {% if im == 'Phone' %}selected{% endif %}>Phone</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label for="interview_location">Location / link</label>
+                    <input
+                      type="text"
+                      id="interview_location"
+                      name="interview_location"
+                      placeholder="Office address or meeting link"
+                      value="{{ application.interviewLocation ?? '' }}"
+                    >
+                  </div>
+
+                  <div>
+                    <label for="interview_notes">Notes</label>
+                    <textarea
+                      id="interview_notes"
+                      name="interview_notes"
+                      placeholder="e.g. topics to cover, panel members..."
+                    >{{ application.interviewNotes ?? '' }}</textarea>
+                  </div>
+                </div>
+
+                <div class="interview-submit">
+                  <button type="submit">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save interview
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          {% endif %}
+
+          {# Raw JSON (for debugging) #}
+          {% if aiResult %}
+            <details style="margin-top:10px;font-size:0.8rem;">
+              <summary>Show raw AI JSON</summary>
+              <pre class="logs">
+{{ aiResult|json_encode(constant('JSON_PRETTY_PRINT')) }}
+              </pre>
+            </details>
+          {% endif %}
+
+        </div>
+      </section>
+    </div>
+
+    {# ================= PYTHON LOGS ================= #}
+    {% if ai_logs is defined and ai_logs|length > 0 %}
+      <section class="card" style="margin-top:18px;">
+        <div class="card-inner">
+          <h2>
+            <i class="fa-solid fa-terminal"></i>
+            AI engine logs (Python server)
+          </h2>
+          <pre class="logs">{{ ai_logs|join('\n') }}</pre>
+        </div>
+      </section>
+    {% endif %}
+
+  </div>
+</main>
+
+<script>
+  (function () {
+    const toggle = document.getElementById('navToggle');
+    const panel = document.getElementById('navMobilePanel');
+    if (!toggle || !panel) return;
+    toggle.addEventListener('click', function () {
+      panel.classList.toggle('nav-mobile-panel--open');
+    });
+  })();
+</script>
+
+</body>
+</html>

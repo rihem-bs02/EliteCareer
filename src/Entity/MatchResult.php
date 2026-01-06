@@ -4,60 +4,120 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\MatchResultRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MatchResultRepository::class)]
 #[ORM\Table(name: 'match_results')]
-#[ORM\UniqueConstraint(name: 'uq_match_app_algo', columns: ['application_id', 'algorithm_version'])]
 #[ORM\HasLifecycleCallbacks]
 class MatchResult
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'bigint', options: ['unsigned' => true])]
+    #[ORM\Column(type: Types::BIGINT, options: ['unsigned' => true])]
     private ?string $id = null;
 
     #[ORM\ManyToOne(targetEntity: Application::class, inversedBy: 'matchResults')]
-    #[ORM\JoinColumn(name: 'application_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Application $application;
 
-    #[ORM\Column(length: 50, options: ['default' => 'v1'])]
-    private string $algorithmVersion = 'v1';
+    #[ORM\Column(length: 100)]
+    private string $engineName = 'gemini_rag_v1';
 
-    #[ORM\Column(type: 'decimal', precision: 5, scale: 2)]
-    private string $matchScore = '0.00';
+    #[ORM\Column(length: 50)]
+    private string $decision;
 
-    #[ORM\Column(type: 'json', nullable: true)]
-    private ?array $matchedKeywords = null;
+    #[ORM\Column(type: Types::INTEGER)]
+    private int $overallScore;
 
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $notes = null;
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $scores = null;
 
-    #[ORM\Column(type: 'datetime_immutable')]
-    private \DateTimeImmutable $computedAt;
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $rawPayload = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private \DateTimeImmutable $createdAt;
 
     #[ORM\PrePersist]
     public function onPrePersist(): void
     {
-        $this->computedAt = new \DateTimeImmutable('now');
+        $this->createdAt = new \DateTimeImmutable('now');
     }
 
-    public function getId(): ?string { return $this->id; }
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
 
-    public function getApplication(): Application { return $this->application; }
-    public function setApplication(Application $a): self { $this->application = $a; return $this; }
+    public function getApplication(): Application
+    {
+        return $this->application;
+    }
 
-    public function getAlgorithmVersion(): string { return $this->algorithmVersion; }
-    public function setAlgorithmVersion(string $v): self { $this->algorithmVersion = trim($v); return $this; }
+    public function setApplication(Application $application): self
+    {
+        $this->application = $application;
+        return $this;
+    }
 
-    public function getMatchScore(): float { return (float)$this->matchScore; }
-    public function setMatchScore(float $v): self { $this->matchScore = number_format($v, 2, '.', ''); return $this; }
+    public function getEngineName(): string
+    {
+        return $this->engineName;
+    }
 
-    public function getMatchedKeywords(): ?array { return $this->matchedKeywords; }
-    public function setMatchedKeywords(?array $v): self { $this->matchedKeywords = $v; return $this; }
+    public function setEngineName(string $engineName): self
+    {
+        $this->engineName = $engineName;
+        return $this;
+    }
 
-    public function getNotes(): ?string { return $this->notes; }
-    public function setNotes(?string $v): self { $this->notes = $v; return $this; }
+    public function getDecision(): string
+    {
+        return $this->decision;
+    }
 
-    public function getComputedAt(): \DateTimeImmutable { return $this->computedAt; }
+    public function setDecision(string $decision): self
+    {
+        $this->decision = $decision;
+        return $this;
+    }
+
+    public function getOverallScore(): int
+    {
+        return $this->overallScore;
+    }
+
+    public function setOverallScore(int $overallScore): self
+    {
+        $this->overallScore = $overallScore;
+        return $this;
+    }
+
+    public function getScores(): ?array
+    {
+        return $this->scores;
+    }
+
+    public function setScores(?array $scores): self
+    {
+        $this->scores = $scores;
+        return $this;
+    }
+
+    public function getRawPayload(): ?array
+    {
+        return $this->rawPayload;
+    }
+
+    public function setRawPayload(?array $rawPayload): self
+    {
+        $this->rawPayload = $rawPayload;
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
 }

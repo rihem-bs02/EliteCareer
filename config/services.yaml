@@ -6,6 +6,7 @@ parameters:
   jwt.audience: '%env(JWT_AUDIENCE)%'
   jwt.access_ttl: '%env(int:JWT_ACCESS_TTL_SECONDS)%'
   jwt.refresh_ttl_days: '%env(int:JWT_REFRESH_TTL_DAYS)%'
+  resumes_dir: '%kernel.project_dir%/var/resumes'
 
 services:
   _defaults:
@@ -29,3 +30,4 @@ services:
   App\Security\RefreshTokenService:
     arguments:
       $refreshTtlDays: '%jwt.refresh_ttl_days%'
+      

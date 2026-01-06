@@ -1,0 +1,1014 @@
+{# templates/jobs/show.html.twig #}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ job.title }} | EliteCareer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {# Fonts + Icons #}
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+
+  {# (Optional) Your global stylesheet if you want to keep it #}
+  <link rel="stylesheet" href="/styles.css">
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #3b82f6;
+      --primary-soft: rgba(37,99,235,0.11);
+      --primary-soft-strong: rgba(37,99,235,0.22);
+      --accent: #f97316;
+      --accent-soft: rgba(249,115,22,0.08);
+      --darker: #020617;
+      --dark: #0f172a;
+      --gray: #6b7280;
+      --gray-dark: #4b5563;
+      --gray-light: #e5e7eb;
+      --gray-lighter: #f3f4f6;
+      --light: #f9fafb;
+      --success: #16a34a;
+      --error: #ef4444;
+      --radius: 8px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --shadow-sm: 0 4px 10px rgba(15,23,42,0.10);
+      --shadow-lg: 0 18px 45px rgba(15,23,42,0.18);
+      --transition: 150ms ease;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 0 0, #e0f2fe 0, transparent 50%),
+                  radial-gradient(circle at 100% 0, #fce7f3 0, transparent 50%),
+                  var(--light);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    /* =========================
+       NAVBAR
+       ========================= */
+    .main-navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: linear-gradient(
+        to bottom,
+        rgba(15,23,42,0.95),
+        rgba(15,23,42,0.90),
+        rgba(15,23,42,0.86)
+      );
+      border-bottom: 1px solid rgba(148,163,184,0.28);
+      box-shadow: 0 18px 40px rgba(15,23,42,0.7);
+    }
+
+    .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .nav-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 0% 0%, #38bdf8, #6366f1 40%, #ec4899 80%);
+      box-shadow: 0 12px 30px rgba(15,23,42,0.7);
+    }
+
+    .nav-brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .nav-brand-name {
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      font-size: 1.12rem;
+      font-weight: 800;
+      color: #f9fafb;
+      letter-spacing: 0.03em;
+    }
+
+    .nav-brand-tagline {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: rgba(148,163,184,0.93);
+    }
+
+    .nav-main {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .nav-link {
+      position: relative;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: rgba(209,213,219,0.96);
+      text-decoration: none;
+      padding: 6px 0;
+      transition: color var(--transition);
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #3b82f6, #a855f7, #ec4899);
+      transition: width 160ms ease;
+    }
+
+    .nav-link:hover {
+      color: #ffffff;
+    }
+
+    .nav-link:hover::after,
+    .nav-link--active::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-ghost-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: rgba(209,213,219,0.96);
+      text-decoration: none;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.9);
+      transition: background var(--transition), border-color var(--transition),
+                  transform var(--transition), box-shadow var(--transition);
+    }
+
+    .nav-ghost-link i {
+      font-size: 0.85rem;
+    }
+
+    .nav-ghost-link:hover {
+      background: rgba(15,23,42,0.98);
+      border-color: rgba(209,213,219,0.9);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-primary-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 15px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.86rem;
+      font-weight: 700;
+      text-decoration: none;
+      background: linear-gradient(135deg, var(--accent), #fb923c);
+      color: #0f172a;
+      box-shadow: 0 12px 30px rgba(15,23,42,0.6);
+      transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+    }
+
+    .nav-primary-btn i {
+      font-size: 0.9rem;
+    }
+
+    .nav-primary-btn:hover {
+      filter: brightness(1.06);
+      transform: translateY(-1px);
+      box-shadow: 0 18px 45px rgba(15,23,42,0.8);
+    }
+
+    .nav-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.95);
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition), transform var(--transition);
+    }
+
+    .nav-toggle i {
+      font-size: 1rem;
+    }
+
+    .nav-toggle:hover {
+      background: rgba(15,23,42,0.99);
+      border-color: rgba(209,213,219,0.9);
+      transform: translateY(-1px);
+    }
+
+    .nav-mobile-panel {
+      display: none;
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      padding: 10px 16px 14px;
+      background: rgba(15,23,42,0.98);
+      border-bottom: 1px solid rgba(148,163,184,0.3);
+      box-shadow: 0 18px 40px rgba(15,23,42,0.9);
+    }
+
+    .nav-mobile-links {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .nav-mobile-link {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: rgba(209,213,219,0.97);
+      text-decoration: none;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .nav-mobile-link:hover {
+      background: rgba(31,41,55,0.95);
+      color: #ffffff;
+    }
+
+    .nav-mobile-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .nav-main {
+        display: none;
+      }
+      .nav-toggle {
+        display: inline-flex;
+      }
+      .nav-mobile-panel.nav-mobile-panel--open {
+        display: block;
+      }
+    }
+
+    /* =========================
+       PAGE LAYOUT
+       ========================= */
+    .job-show-shell {
+      padding: 120px 20px 80px; /* account for navbar */
+    }
+
+    .job-show-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.2fr);
+      gap: 26px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 992px) {
+      .job-show-shell {
+        padding: 100px 16px 60px;
+      }
+      .job-show-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .job-header {
+      grid-column: 1 / -1;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .job-header-main {
+      max-width: 640px;
+    }
+
+    .job-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--darker);
+      margin: 0 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .job-title i {
+      color: var(--primary);
+      font-size: 1.7rem;
+    }
+
+    .job-company-name {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: rgba(55,65,81,0.98);
+      margin-bottom: 4px;
+    }
+
+    .job-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: rgba(100,116,139,0.98);
+      margin-top: 4px;
+    }
+
+    .job-meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(248,250,252,0.96);
+      border: 1px solid rgba(203,213,225,0.9);
+      font-weight: 500;
+      color: rgba(55,65,81,0.98);
+    }
+
+    .job-meta-pill i {
+      font-size: 0.8rem;
+      color: var(--primary);
+    }
+
+    .job-header-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      min-width: 220px;
+    }
+
+    .job-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: rgba(16,185,129,0.06);
+      color: var(--success);
+      border: 1px solid rgba(16,185,129,0.45);
+    }
+
+    .job-status-pill--closed {
+      background: rgba(148,163,184,0.12);
+      border-color: rgba(148,163,184,0.6);
+      color: rgba(55,65,81,0.95);
+    }
+
+    .job-status-pill i {
+      font-size: 0.8rem;
+    }
+
+    .job-actions-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .job-btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: 1px solid rgba(148,163,184,0.75);
+      background: rgba(248,250,252,0.98);
+      color: rgba(55,65,81,0.98);
+      text-decoration: none;
+      transition: background var(--transition), border-color var(--transition),
+                  transform var(--transition), box-shadow var(--transition);
+    }
+
+    .job-btn-ghost i {
+      font-size: 0.85rem;
+    }
+
+    .job-btn-ghost:hover {
+      background: #ffffff;
+      border-color: rgba(148,163,184,0.95);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* HR decision buttons */
+    .job-hr-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .hr-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      background: #ffffff;
+      transition: background var(--transition), border-color var(--transition),
+                  box-shadow var(--transition), transform var(--transition), color var(--transition);
+    }
+
+    .hr-btn i {
+      font-size: 0.85rem;
+    }
+
+    .hr-btn--accept {
+      border-color: rgba(22,163,74,0.4);
+      background: rgba(22,163,74,0.07);
+      color: var(--success);
+    }
+
+    .hr-btn--accept:hover {
+      background: rgba(22,163,74,0.14);
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
+    }
+
+    .hr-btn--reject {
+      border-color: rgba(239,68,68,0.4);
+      background: rgba(239,68,68,0.06);
+      color: var(--error);
+    }
+
+    .hr-btn--reject:hover {
+      background: rgba(239,68,68,0.13);
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
+    }
+
+    /* Left column: description */
+    .job-main-card {
+      background: #ffffff;
+      border-radius: 24px;
+      border: 1px solid rgba(226,232,240,0.95);
+      box-shadow: var(--shadow-lg);
+      padding: 22px 22px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .job-main-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(700px 340px at -10% 0%, rgba(59,130,246,0.11), transparent 55%),
+        radial-gradient(650px 320px at 110% 10%, rgba(236,72,153,0.11), transparent 60%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .job-main-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .job-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .job-section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--darker);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .job-section-body {
+      font-size: 0.92rem;
+      color: rgba(55,65,81,0.98);
+      line-height: 1.55;
+      white-space: pre-line;
+    }
+
+    .job-bullet-list {
+      margin: 4px 0 0 0;
+      padding-left: 1.15rem;
+      font-size: 0.92rem;
+      color: rgba(55,65,81,0.98);
+      line-height: 1.55;
+    }
+
+    .job-bullet-list li {
+      margin-bottom: 4px;
+    }
+
+    .job-divider {
+      height: 1px;
+      background: var(--gray-lighter);
+      margin: 6px 0 8px;
+      opacity: 0.9;
+    }
+
+    /* Right column: company + apply card */
+    .job-side-card {
+      background: #020617;
+      border-radius: 24px;
+      padding: 22px 20px 20px;
+      color: #e5e7eb;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(30,64,175,0.6);
+    }
+
+    .job-side-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(520px 260px at 10% 0%, rgba(59,130,246,0.9), transparent 55%),
+        radial-gradient(500px 260px at 90% 40%, rgba(236,72,153,0.55), transparent 60%);
+      opacity: 0.95;
+      mix-blend-mode: screen;
+    }
+
+    .job-side-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .job-side-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.6);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .job-side-pill i {
+      color: #22c55e;
+    }
+
+    .job-side-company {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .job-side-company-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+    }
+
+    .job-side-company-industry {
+      font-size: 0.86rem;
+      opacity: 0.9;
+    }
+
+    .job-side-company-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .job-side-company-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .job-side-company-meta i {
+      font-size: 0.85rem;
+    }
+
+    .job-side-description {
+      font-size: 0.86rem;
+      opacity: 0.93;
+      line-height: 1.5;
+    }
+
+    .job-apply-block {
+      margin-top: 4px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(148,163,184,0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .job-apply-text {
+      font-size: 0.84rem;
+      opacity: 0.9;
+    }
+
+    .job-apply-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .job-apply-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: none;
+      background: #f97316;
+      color: #0f172a;
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(15,23,42,0.45);
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.08s ease;
+    }
+
+    .job-apply-primary i {
+      font-size: 0.9rem;
+    }
+
+    .job-apply-primary:hover {
+      background: #fb923c;
+      transform: translateY(-1px);
+      box-shadow: 0 14px 40px rgba(15,23,42,0.6);
+    }
+
+    .job-apply-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.9);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #e5e7eb;
+      text-decoration: none;
+    }
+
+    .job-apply-secondary i {
+      font-size: 0.85rem;
+    }
+
+    .job-side-footnote {
+      margin-top: 6px;
+      font-size: 0.78rem;
+      opacity: 0.85;
+    }
+
+    @media (max-width: 768px) {
+      .job-header-actions {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+{# ================= NAVBAR ================= #}
+<header class="main-navbar">
+  <div class="nav-inner">
+    <a href="{{ path('web_jobs_index') }}" class="nav-brand">
+      <div class="nav-logo-mark"></div>
+      <div class="nav-brand-text">
+        <span class="nav-brand-name">EliteCareer</span>
+        <span class="nav-brand-tagline">Smarter hiring, better matches</span>
+      </div>
+    </a>
+
+    <nav class="nav-main">
+      <div class="nav-links">
+        <a href="{{ path('web_jobs_index') }}" class="nav-link nav-link--active">Jobs</a>
+        <a href="{{ path('web_employer_applicants') }}" class="nav-link">Applicants</a>
+        <a href="/about" class="nav-link">About</a>
+      </div>
+      <div class="nav-cta">
+        {% if app.user %}
+          <a href="/profile" class="nav-ghost-link">
+            <i class="fa-solid fa-user-circle"></i>
+            {{ app.user.email ?? 'Profile' }}
+          </a>
+          <a href="/logout" class="nav-ghost-link">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            Logout
+          </a>
+        {% else %}
+          <a href="/login" class="nav-ghost-link">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            Login
+          </a>
+        {% endif %}
+        <a href="/employer/jobs/new" class="nav-primary-btn">
+          <i class="fa-solid fa-plus"></i>
+          Post a job
+        </a>
+      </div>
+    </nav>
+
+    <button class="nav-toggle" type="button">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+
+  {# Static mobile panel; you can toggle with JS later #}
+  <div class="nav-mobile-panel">
+    <div class="nav-mobile-links">
+      <a href="{{ path('web_jobs_index') }}" class="nav-mobile-link">Jobs</a>
+      <a href="{{ path('web_employer_applicants') }}" class="nav-mobile-link">Applicants</a>
+      <a href="/about" class="nav-mobile-link">About</a>
+    </div>
+    <div class="nav-mobile-cta">
+      {% if app.user %}
+        <a href="/profile" class="nav-ghost-link" style="width:100%;justify-content:center;">
+          <i class="fa-solid fa-user-circle"></i>
+          Profile
+        </a>
+        <a href="/logout" class="nav-ghost-link" style="width:100%;justify-content:center;">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          Logout
+        </a>
+      {% else %}
+        <a href="/login" class="nav-ghost-link" style="width:100%;justify-content:center;">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          Login
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+<main class="job-show-shell">
+  <div class="job-show-inner">
+
+    <header class="job-header">
+      <div class="job-header-main">
+        <h1 class="job-title">
+          <i class="fa-solid fa-briefcase"></i>
+          {{ job.title }}
+        </h1>
+
+        <div class="job-company-name">
+          {{ job.company ? job.company.name : 'Company undisclosed' }}
+        </div>
+
+        <div class="job-meta-row">
+          {% if job.location %}
+            <span class="job-meta-pill">
+              <i class="fa-solid fa-location-dot"></i>
+              {{ job.location }}
+            </span>
+          {% endif %}
+
+          {% if job.employmentType is defined and job.employmentType %}
+            <span class="job-meta-pill">
+              <i class="fa-solid fa-clock"></i>
+              {{ job.employmentType|replace({'_':' '})|title }}
+            </span>
+          {% endif %}
+
+          {% if job.workMode is defined and job.workMode %}
+            <span class="job-meta-pill">
+              <i class="fa-solid fa-building-user"></i>
+              {{ job.workMode|replace({'_':' '})|title }}
+            </span>
+          {% endif %}
+
+          {% if job.publishedAt %}
+            <span class="job-meta-pill">
+              <i class="fa-solid fa-calendar-day"></i>
+              Posted {{ job.publishedAt|date('Y-m-d') }}
+            </span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="job-header-actions">
+        {% set isOpen = job.status is defined and job.status == 'PUBLISHED' %}
+        <span class="job-status-pill {{ isOpen ? '' : 'job-status-pill--closed' }}">
+          <i class="fa-solid {{ isOpen ? 'fa-circle-check' : 'fa-circle-dot' }}"></i>
+          {{ isOpen ? 'Actively hiring' : 'Not accepting new applications' }}
+        </span>
+
+        <div class="job-actions-row">
+          <a href="{{ path('web_jobs_index') }}" class="job-btn-ghost">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to all jobs
+          </a>
+          <a href="/dashboard" class="job-btn-ghost">
+            <i class="fa-solid fa-gauge-high"></i>
+            Candidate dashboard
+          </a>
+        </div>
+
+        {# HR DECISION BUTTONS – visible only for employer/admin #}
+        {% if is_granted('ROLE_EMPLOYER') or is_granted('ROLE_ADMIN') %}
+          <div class="job-hr-actions" aria-label="HR decisions">
+            <button type="button" class="hr-btn hr-btn--accept">
+              <i class="fa-solid fa-user-check"></i>
+              Accept candidate
+            </button>
+            <button type="button" class="hr-btn hr-btn--reject">
+              <i class="fa-solid fa-user-xmark"></i>
+              Reject candidate
+            </button>
+          </div>
+          {# TODO: wire these buttons to real routes or JS (e.g. modal) in your Symfony app #}
+        {% endif %}
+      </div>
+    </header>
+
+    <section class="job-main-card" aria-label="Job description">
+      <div class="job-main-inner">
+
+        <div class="job-section">
+          <div class="job-section-title">
+            About the role
+          </div>
+          <div class="job-section-body">
+            {{ job.description|default('No description available for this role.')|nl2br }}
+          </div>
+        </div>
+
+        <div class="job-divider"></div>
+
+        <div class="job-section">
+          <div class="job-section-title">
+            Requirements
+          </div>
+          {% if job.requirements %}
+            <div class="job-section-body">
+              {{ job.requirements|nl2br }}
+            </div>
+          {% else %}
+            <div class="job-section-body">
+              The employer has not provided a detailed list of requirements. We recommend applying if your skills and experience are aligned with the description above.
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="job-divider"></div>
+
+        <div class="job-section">
+          <div class="job-section-title">
+            How to succeed
+          </div>
+          <ul class="job-bullet-list">
+            <li>Highlight past projects where you had a measurable impact that relates to this role.</li>
+            <li>Tailor your resume and cover letter to the responsibilities mentioned in the description.</li>
+            <li>Be ready to explain your technical and non-technical decisions in previous experiences.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <aside class="job-side-card" aria-label="Company details and application">
+      <div class="job-side-inner">
+        <span class="job-side-pill">
+          <i class="fa-solid fa-building"></i>
+          About this company
+        </span>
+
+        <div class="job-side-company">
+          <div class="job-side-company-name">
+            {{ job.company ? job.company.name : 'Company undisclosed' }}
+          </div>
+
+          {% if job.company and job.company.industry is defined and job.company.industry %}
+            <div class="job-side-company-industry">
+              {{ job.company.industry }}
+            </div>
+          {% endif %}
+
+          <div class="job-side-company-meta">
+            {% if job.company and job.company.website is defined and job.company.website %}
+              <span>
+                <i class="fa-solid fa-globe"></i>
+                <a href="{{ job.company.website }}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">
+                  {{ job.company.website }}
+                </a>
+              </span>
+            {% endif %}
+            {% if job.company and job.company.createdAt is defined and job.company.createdAt %}
+              <span>
+                <i class="fa-solid fa-calendar"></i>
+                On EliteCareer since {{ job.company.createdAt|date('Y') }}
+              </span>
+            {% endif %}
+          </div>
+        </div>
+
+        <p class="job-side-description">
+          This company is using EliteCareer to reach candidates that care about impact, learning and long-term growth.
+          Make sure your application clearly shows how you can help them succeed on this specific role.
+        </p>
+
+        <div class="job-apply-block">
+          <p class="job-apply-text">
+            Ready to apply? Your application will be sent directly to the employer. We recommend attaching a concise resume
+            and, if relevant, links to your portfolio, GitHub or recent projects.
+          </p>
+
+          <div class="job-apply-actions">
+            <a
+              href="/jobs/{{ job.id }}/apply"
+              class="job-apply-primary"
+            >
+              <i class="fa-solid fa-paper-plane"></i>
+              Apply now
+            </a>
+
+            {% if job.location %}
+              <span class="job-apply-secondary">
+                <i class="fa-solid fa-location-dot"></i>
+                {{ job.location }}
+              </span>
+            {% endif %}
+          </div>
+
+          <p class="job-side-footnote">
+            By applying to this job, you agree to share your profile and application details with the employer.
+          </p>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+</body>
+</html>
+

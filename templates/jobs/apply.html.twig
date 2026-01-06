@@ -1,0 +1,480 @@
+{# templates/jobs/apply.html.twig #}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Apply to {{ job.title }} | EliteCareer</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/styles.css">
+
+  <style>
+    body { background: var(--light); }
+
+    .apply-shell {
+      padding: 140px 20px 80px;
+    }
+
+    .apply-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.5fr);
+      gap: 28px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 992px) {
+      .apply-inner {
+        grid-template-columns: 1fr;
+      }
+      .apply-shell {
+        padding: 120px 16px 60px;
+      }
+    }
+
+    .apply-header {
+      margin-bottom: 22px;
+    }
+
+    .apply-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--darker);
+      margin: 0 0 6px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .apply-sub {
+      color: var(--gray);
+      font-size: 0.96rem;
+      margin: 0;
+    }
+
+    .apply-meta {
+      margin-top: 10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: rgba(100,116,139,0.95);
+      align-items:center;
+    }
+
+    .apply-pill {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 11px;
+      border-radius:999px;
+      background:rgba(248,250,252,0.9);
+      border:1px solid var(--gray-light);
+      font-size:0.8rem;
+      font-weight:500;
+      color:var(--dark);
+    }
+
+    .apply-pill i {
+      font-size:0.85rem;
+      color:var(--primary);
+    }
+
+    .apply-alert {
+      margin-bottom: 14px;
+      padding: 11px 13px;
+      border-radius: var(--radius);
+      border: 1px solid;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      font-size:0.9rem;
+    }
+
+    .apply-alert i {
+      margin-top: 2px;
+    }
+
+    .apply-alert--success {
+      background: rgba(16,185,129,0.08);
+      border-color: rgba(16,185,129,0.32);
+      color: var(--success);
+    }
+
+    .apply-alert--error {
+      background: rgba(239,68,68,0.06);
+      border-color: rgba(239,68,68,0.32);
+      color: var(--error);
+    }
+
+    .apply-card {
+      background:#ffffff;
+      border-radius:var(--radius-lg);
+      border:1px solid var(--gray-light);
+      box-shadow:var(--shadow-lg);
+      padding:24px 24px 22px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .apply-card::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(650px 280px at -10% 0%, rgba(59,130,246,0.12), transparent 55%),
+        radial-gradient(620px 260px at 110% 10%, rgba(236,72,153,0.16), transparent 60%);
+      pointer-events:none;
+      opacity:1;
+    }
+
+    .apply-card-inner {
+      position:relative;
+      z-index:1;
+    }
+
+    .apply-card-title {
+      font-size:1.1rem;
+      font-weight:800;
+      color:var(--darker);
+      margin:0 0 4px;
+    }
+
+    .apply-card-sub {
+      font-size:0.9rem;
+      color:var(--gray);
+      margin:0 0 18px;
+    }
+
+    .apply-form {
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .apply-field {
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .apply-label-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+    }
+
+    .apply-label {
+      font-size:0.9rem;
+      font-weight:600;
+      color:var(--darker);
+    }
+
+    .apply-hint {
+      font-size:0.78rem;
+      color:rgba(100,116,139,0.9);
+    }
+
+    .apply-input,
+    .apply-textarea {
+      width:100%;
+      border-radius:var(--radius);
+      border:1px solid var(--gray-light);
+      background:rgba(248,250,252,0.95);
+      padding:10px 12px;
+      font-size:0.95rem;
+      outline:none;
+      transition:var(--transition);
+      color:var(--darker);
+    }
+
+    .apply-input:focus,
+    .apply-textarea:focus {
+      border-color:var(--primary-light);
+      background:#ffffff;
+      box-shadow:0 0 0 3px rgba(59,130,246,0.16);
+    }
+
+    .apply-textarea {
+      min-height:150px;
+      resize:vertical;
+    }
+
+    .apply-footer-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:4px;
+    }
+
+    .apply-note {
+      font-size:0.8rem;
+      color:rgba(100,116,139,0.95);
+    }
+
+    .apply-actions {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    /* RIGHT column: job summary */
+
+    .apply-summary {
+      background:#0f172a;
+      border-radius:var(--radius-lg);
+      padding:22px 22px 20px;
+      color:#e5e7eb;
+      position:relative;
+      overflow:hidden;
+      box-shadow:var(--shadow-lg);
+    }
+
+    .apply-summary::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(520px 260px at 10% 0%, rgba(59,130,246,0.55), transparent 55%),
+        radial-gradient(520px 260px at 90% 40%, rgba(236,72,153,0.30), transparent 60%);
+      opacity:0.9;
+      mix-blend-mode:screen;
+    }
+
+    .apply-summary-inner {
+      position:relative;
+      z-index:1;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .apply-summary-topline {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+    }
+
+    .apply-summary-badge {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(15,23,42,0.86);
+      border:1px solid rgba(148,163,184,0.5);
+      font-size:0.76rem;
+      font-weight:600;
+    }
+
+    .apply-summary-badge i {
+      color:#22c55e;
+      font-size:0.9rem;
+    }
+
+    .apply-summary-title {
+      font-family:'Plus Jakarta Sans',sans-serif;
+      font-size:1.2rem;
+      font-weight:800;
+      margin:0;
+    }
+
+    .apply-summary-company {
+      font-size:0.9rem;
+      color:#cbd5f5;
+    }
+
+    .apply-summary-meta {
+      margin-top:6px;
+      font-size:0.8rem;
+      opacity:0.9;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .apply-summary-meta span {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .apply-summary-meta i {
+      font-size:0.85rem;
+    }
+
+    .apply-summary-snippet {
+      margin-top:10px;
+      font-size:0.86rem;
+      opacity:0.9;
+    }
+
+    .apply-summary-footer {
+      margin-top:10px;
+      font-size:0.8rem;
+      opacity:0.9;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+    }
+
+  </style>
+</head>
+<body>
+
+<main class="apply-shell">
+  <div class="apply-inner">
+
+    {# LEFT: application form #}
+    <section aria-label="Apply to job">
+
+      <header class="apply-header">
+        <h1 class="apply-title">
+          <i class="fa-solid fa-file-signature" style="color:var(--primary);"></i>
+          Apply to {{ job.title }}
+        </h1>
+        <p class="apply-sub">
+          Send your application directly to the hiring team. A clear, concise message makes a strong first impression.
+        </p>
+
+        {% if user %}
+          <div class="apply-meta">
+            <span>Logged in as <strong>{{ user.email }}</strong></span>
+            <span class="apply-pill">
+              <i class="fa-solid fa-user-circle"></i>
+              Candidate profile
+            </span>
+          </div>
+        {% endif %}
+      </header>
+
+      {# Flash messages #}
+      {% for msg in app.flashes('success') %}
+        <div class="apply-alert apply-alert--success">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>{{ msg }}</span>
+        </div>
+      {% endfor %}
+
+      {% for msg in app.flashes('error') %}
+        <div class="apply-alert apply-alert--error">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span>{{ msg }}</span>
+        </div>
+      {% endfor %}
+
+      <section class="apply-card">
+        <div class="apply-card-inner">
+          <h2 class="apply-card-title">Your application</h2>
+          <p class="apply-card-sub">
+            Introduce yourself, explain why you’re a good fit, and highlight your most relevant experience.
+          </p>
+
+          <form method="post"
+                action="{{ path('web_jobs_apply', { id: job.id }) }}"
+                class="apply-form">
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+
+            <div class="apply-field">
+              <div class="apply-label-row">
+                <label for="cover_letter" class="apply-label">Message / Cover letter</label>
+                <span class="apply-hint">Required – 5–10 lines is perfect</span>
+              </div>
+              <textarea
+                id="cover_letter"
+                name="cover_letter"
+                class="apply-textarea"
+                required
+                placeholder="Tell the employer who you are, why you’re interested, and what you bring to this role."
+              ></textarea>
+            </div>
+
+            <div class="apply-field">
+              <div class="apply-label-row">
+                <label for="contact" class="apply-label">Additional contact (optional)</label>
+                <span class="apply-hint">LinkedIn, portfolio, GitHub…</span>
+              </div>
+              <input
+                id="contact"
+                name="contact"
+                type="text"
+                class="apply-input"
+                placeholder="e.g. https://www.linkedin.com/in/username"
+              >
+            </div>
+
+            <div class="apply-footer-row">
+              <p class="apply-note">
+                By applying, you agree to share this information with {{ job.company ? job.company.name : 'the employer' }}.
+              </p>
+              <div class="apply-actions">
+                <a href="{{ path('web_jobs_show', { id: job.id }) }}" class="btn btn-secondary">
+                  <i class="fa-solid fa-arrow-left"></i>
+                  Back to job
+                </a>
+                <button type="submit" class="btn">
+                  <i class="fa-solid fa-paper-plane"></i>
+                  Send application
+                </button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </section>
+    </section>
+
+    {# RIGHT: job summary #}
+    <aside class="apply-summary" aria-label="Job summary">
+      <div class="apply-summary-inner">
+        <div class="apply-summary-topline">
+          <div>
+            <h2 class="apply-summary-title">{{ job.title }}</h2>
+            <p class="apply-summary-company">
+              {{ job.company ? job.company.name : 'Company not specified' }}
+            </p>
+          </div>
+          <span class="apply-summary-badge">
+            <i class="fa-solid fa-briefcase"></i>
+            {{ job.employmentType|default('') }} • {{ job.workMode|default('') }}
+          </span>
+        </div>
+
+        <div class="apply-summary-meta">
+          {% if job.location %}
+            <span><i class="fa-solid fa-location-dot"></i>{{ job.location }}</span>
+          {% endif %}
+          {% if job.publishedAt %}
+            <span><i class="fa-solid fa-clock"></i>Posted {{ job.publishedAt|date('Y-m-d') }}</span>
+          {% endif %}
+        </div>
+
+        {% if job.description %}
+  {% set desc = job.description %}
+  <p class="apply-summary-snippet">
+    {{ desc|length > 240 ? desc|slice(0, 240) ~ '…' : desc }}
+  </p>
+{% endif %}
+
+        <div class="apply-summary-footer">
+          <span><i class="fa-solid fa-shield-heart"></i> Your application is only visible to this employer.</span>
+          <span><i class="fa-solid fa-lock"></i> You can withdraw or update your profile at any time.</span>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+</body>
+</html>

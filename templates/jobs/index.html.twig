@@ -1,0 +1,688 @@
+{# templates/jobs/index.html.twig #}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Browse Jobs | EliteCareer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {# Fonts + Icons #}
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+
+  {# Global palette / variables / buttons #}
+  <link rel="stylesheet" href="/styles.css">
+
+  <style>
+    body {
+      background: var(--light);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--dark);
+    }
+
+    .jobs-shell {
+      padding: 140px 20px 80px;
+    }
+
+    .jobs-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .jobs-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .jobs-heading-main {
+      max-width: 640px;
+    }
+
+    .jobs-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--darker);
+      margin: 0 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .jobs-title i {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+
+    .jobs-sub {
+      color: var(--gray);
+      font-size: 0.98rem;
+      margin: 0;
+    }
+
+    .jobs-meta {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: rgba(100,116,139,0.95);
+    }
+
+    .jobs-meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--gray-light);
+      background: rgba(248,250,252,0.95);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .jobs-meta-pill i {
+      color: var(--primary);
+      font-size: 0.85rem;
+    }
+
+    .jobs-filters {
+      min-width: 260px;
+      max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .jobs-search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-light);
+      padding: 10px 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .jobs-search-box i {
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    .jobs-search-input {
+      border: none;
+      outline: none;
+      flex: 1;
+      font-size: 0.95rem;
+      background: transparent;
+      color: var(--darker);
+    }
+
+    .jobs-search-input::placeholder {
+      color: rgba(148,163,184,0.9);
+    }
+
+    .jobs-search-hint {
+      font-size: 0.8rem;
+      color: rgba(100,116,139,0.95);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .jobs-search-hint-kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(148,163,184,0.8);
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: rgba(30,64,175,0.9);
+      background: rgba(239,246,255,0.9);
+    }
+
+    .jobs-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.3fr);
+      gap: 26px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 992px) {
+      .jobs-shell {
+        padding: 120px 16px 60px;
+      }
+      .jobs-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Main job list card */
+    .jobs-card {
+      background: #ffffff;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--gray-light);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .jobs-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(700px 320px at -10% 0%, rgba(59,130,246,0.10), transparent 55%),
+        radial-gradient(650px 300px at 110% 10%, rgba(236,72,153,0.10), transparent 60%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .jobs-card-inner {
+      position: relative;
+      z-index: 1;
+      padding: 18px 18px 18px;
+    }
+
+    .jobs-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--gray-lighter);
+    }
+
+    .jobs-card-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--darker);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+    }
+
+    .jobs-card-title i {
+      color: var(--primary);
+    }
+
+    .jobs-card-count {
+      font-size: 0.82rem;
+      color: rgba(100,116,139,0.95);
+    }
+
+    .jobs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .job-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: 14px;
+      padding: 12px 12px 12px;
+      border-radius: var(--radius-lg);
+      background: rgba(248,250,252,0.95);
+      border: 1px solid transparent;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, transform 0.12s ease;
+      cursor: pointer;
+    }
+
+    .job-item:hover {
+      border-color: rgba(59,130,246,0.45);
+      background: #ffffff;
+      box-shadow: 0 16px 40px rgba(15,23,42,0.12);
+      transform: translateY(-1px);
+    }
+
+    .job-main {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .job-title-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .job-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--darker);
+      margin: 0;
+    }
+
+    .job-title a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .job-title a:hover {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+    }
+
+    .job-company {
+      font-size: 0.9rem;
+      color: rgba(55,65,81,0.95);
+      font-weight: 500;
+    }
+
+    .job-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: rgba(100,116,139,0.98);
+    }
+
+    .job-meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(239,246,255,0.9);
+      border: 1px solid rgba(191,219,254,0.9);
+      font-weight: 500;
+      color: rgba(30,64,175,0.95);
+    }
+
+    .job-meta-pill i {
+      font-size: 0.8rem;
+    }
+
+    .job-desc {
+      font-size: 0.86rem;
+      color: rgba(75,85,99,0.98);
+      margin-top: 4px;
+      max-width: 48rem;
+    }
+
+    .job-desc span.more {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .job-side {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .job-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .job-badge {
+      font-size: 0.78rem;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.02);
+      color: rgba(55,65,81,0.95);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .job-badge i {
+      font-size: 0.78rem;
+    }
+
+    .job-cta {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .job-cta-link {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--primary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(219,234,254,0.6);
+    }
+
+    .job-cta-link i {
+      font-size: 0.8rem;
+    }
+
+    .jobs-empty {
+      padding: 18px 14px 20px;
+      border-radius: var(--radius-lg);
+      background: rgba(248,250,252,0.9);
+      border: 1px dashed var(--gray-light);
+      font-size: 0.95rem;
+      color: var(--gray);
+    }
+
+    .jobs-empty a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .jobs-empty a:hover {
+      text-decoration: underline;
+    }
+
+    /* Side panel / insights */
+    .jobs-side-card {
+      background: #0f172a;
+      border-radius: var(--radius-xl);
+      padding: 24px 20px 22px;
+      color: #e5e7eb;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .jobs-side-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(520px 260px at 10% 0%, rgba(59,130,246,0.7), transparent 55%),
+        radial-gradient(500px 260px at 90% 40%, rgba(236,72,153,0.43), transparent 60%);
+      opacity: 0.95;
+      mix-blend-mode: screen;
+    }
+
+    .jobs-side-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .jobs-side-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.86);
+      border: 1px solid rgba(148,163,184,0.45);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .jobs-side-pill i {
+      color: #22c55e;
+    }
+
+    .jobs-side-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      line-height: 1.2;
+    }
+
+    .jobs-side-text {
+      font-size: 0.9rem;
+      opacity: 0.93;
+    }
+
+    .jobs-side-list {
+      list-style: none;
+      padding: 0;
+      margin: 4px 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.86rem;
+    }
+
+    .jobs-side-list li {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .jobs-side-list li i {
+      margin-top: 2px;
+      font-size: 0.8rem;
+    }
+
+    .jobs-side-meta {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      opacity: 0.88;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .jobs-side-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .jobs-side-meta i {
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+<main class="jobs-shell">
+  <div class="jobs-inner">
+
+    <header class="jobs-header">
+      <div class="jobs-heading-main">
+        <h1 class="jobs-title">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          Find your next opportunity
+        </h1>
+        <p class="jobs-sub">
+          Browse curated roles from vetted companies. Apply in a few clicks when you find a role that matches your skills and ambitions.
+        </p>
+        <div class="jobs-meta">
+          <span>{{ jobs|length }} open job{{ jobs|length == 1 ? '' : 's' }}</span>
+          <span>Updated in real time</span>
+        </div>
+      </div>
+
+      <div class="jobs-filters">
+        <div class="jobs-search-box">
+          <i class="fa-solid fa-search"></i>
+          <input
+            type="search"
+            class="jobs-search-input"
+            placeholder="Search by title, company, location… (UI only)"
+          >
+        </div>
+        <div class="jobs-search-hint">
+          <span class="jobs-search-hint-kbd">Tip</span>
+          <span>Use filters in the left column (coming soon) to refine your search.</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="jobs-layout">
+      <section class="jobs-card" aria-label="Job listings">
+        <div class="jobs-card-inner">
+          <div class="jobs-card-head">
+            <h2 class="jobs-card-title">
+              <i class="fa-solid fa-briefcase"></i>
+              Job listings
+            </h2>
+            <span class="jobs-card-count">
+              {{ jobs|length }} job{{ jobs|length == 1 ? '' : 's' }} available
+            </span>
+          </div>
+
+          {% if jobs is not empty %}
+            <div class="jobs-list">
+              {% for job in jobs %}
+                <article class="job-item" onclick="window.location.href='{{ path('web_job_show', {id: job.id}) }}'">
+                  <div class="job-main">
+                    <div class="job-title-row">
+                      <h3 class="job-title">
+                        <a href="{{ path('web_job_show', {id: job.id}) }}">
+                          {{ job.title }}
+                        </a>
+                      </h3>
+                    </div>
+                    <div class="job-company">
+                      {{ job.company ? job.company.name : 'Company undisclosed' }}
+                    </div>
+                    <div class="job-meta-row">
+                      {% if job.location %}
+                        <span class="job-meta-pill">
+                          <i class="fa-solid fa-location-dot"></i>
+                          {{ job.location }}
+                        </span>
+                      {% endif %}
+                      {% if job.employmentType is defined and job.employmentType %}
+                        <span class="job-meta-pill">
+                          <i class="fa-solid fa-clock"></i>
+                          {{ job.employmentType|replace({'_':' '})|title }}
+                        </span>
+                      {% endif %}
+                      {% if job.workMode is defined and job.workMode %}
+                        <span class="job-meta-pill">
+                          <i class="fa-solid fa-building-user"></i>
+                          {{ job.workMode|replace({'_':' '})|title }}
+                        </span>
+                      {% endif %}
+                      {% if job.publishedAt %}
+                        <span class="job-meta-pill">
+                          <i class="fa-solid fa-calendar-day"></i>
+                          Posted {{ job.publishedAt|date('Y-m-d') }}
+                        </span>
+                      {% endif %}
+                    </div>
+
+                    {% if job.description %}
+                      {% set short = job.description|length > 220
+                        ? job.description|slice(0, 220) ~ '…'
+                        : job.description %}
+                      <p class="job-desc">
+                        {{ short }}
+                        {% if job.description|length > 220 %}
+                          <span class="more">View more</span>
+                        {% endif %}
+                      </p>
+                    {% endif %}
+                  </div>
+
+                  <div class="job-side">
+                    <div class="job-badges">
+                      {% if job.status is defined and job.status == 'PUBLISHED' %}
+                        <span class="job-badge">
+                          <i class="fa-solid fa-circle-check"></i>
+                          Actively hiring
+                        </span>
+                      {% endif %}
+                      {% if job.company and job.company.industry is defined and job.company.industry %}
+                        <span class="job-badge">
+                          <i class="fa-solid fa-layer-group"></i>
+                          {{ job.company.industry }}
+                        </span>
+                      {% endif %}
+                    </div>
+                    <div class="job-cta">
+                      <a
+                        href="{{ path('web_job_show', {id: job.id}) }}"
+                        class="job-cta-link"
+                      >
+                        View details
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="jobs-empty">
+              There are no open roles at the moment.
+              Check back soon or explore other sections of EliteCareer.
+            </div>
+          {% endif %}
+        </div>
+      </section>
+
+      <aside class="jobs-side-card" aria-label="Job search tips">
+        <div class="jobs-side-inner">
+          <span class="jobs-side-pill">
+            <i class="fa-solid fa-lightbulb"></i>
+            Candidate insights
+          </span>
+
+          <h2 class="jobs-side-title">
+            Stand out with a focused profile and tailored applications.
+          </h2>
+
+          <p class="jobs-side-text">
+            Recruiters see dozens of profiles per role. Highlight your impact, not just your tasks,
+            and adapt your resume to the missions described in each job.
+          </p>
+
+          <ul class="jobs-side-list">
+            <li>
+              <i class="fa-solid fa-circle-dot"></i>
+              <span><strong>Align your skills:</strong> reuse keywords from the job description when they truly match your background.</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-circle-dot"></i>
+              <span><strong>Show outcomes:</strong> quantify your impact (revenue, users, performance, time saved…).</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-circle-dot"></i>
+              <span><strong>Keep it concise:</strong> 1–2 pages is usually enough, even for senior roles.</span>
+            </li>
+          </ul>
+
+          <div class="jobs-side-meta">
+            <span>
+              <i class="fa-solid fa-stopwatch"></i>
+              Avg. application time: ~8 minutes
+            </span>
+            <span>
+              <i class="fa-solid fa-users"></i>
+              Opportunities from vetted companies
+            </span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+  </div>
+</main>
+
+</body>
+</html>

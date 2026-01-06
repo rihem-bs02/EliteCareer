@@ -13,20 +13,29 @@
     :root {
       --primary: #2563eb;
       --primary-light: #60a5fa;
+      --primary-soft: rgba(37,99,235,0.08);
       --accent: #ec4899;
+
       --light: #f1f5f9;
       --darker: #0f172a;
       --dark: #020617;
+
       --gray: #64748b;
+      --gray-dark: #475569;
       --gray-light: #e2e8f0;
       --gray-lighter: #f8fafc;
+
       --success: #16a34a;
       --warning: #f59e0b;
       --error: #ef4444;
+
       --radius: 0.75rem;
       --radius-lg: 1rem;
-      --shadow: 0 8px 20px rgba(15,23,42,0.08);
+
+      --shadow-sm: 0 4px 12px rgba(15,23,42,0.12);
+      --shadow: 0 8px 20px rgba(15,23,42,0.1);
       --shadow-lg: 0 18px 45px rgba(15,23,42,0.18);
+
       --transition: 180ms ease;
     }
 
@@ -53,7 +62,9 @@
       padding: 0 20px;
     }
 
-    /* Header layout */
+    /* =====================
+       Layout / Header
+       ===================== */
     .job-page-shell {
       padding: 140px 0 80px;
     }
@@ -79,6 +90,14 @@
       color: var(--darker);
       margin: 0 0 4px;
       letter-spacing: -0.03em;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .job-page-title i {
+      color: var(--primary);
+      font-size: 1.5rem;
     }
 
     .job-page-sub {
@@ -93,13 +112,20 @@
       color: rgba(100,116,139,0.95);
     }
 
+    .job-page-meta strong {
+      color: var(--darker);
+    }
+
     .job-actions {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
-    /* Buttons */
+    /* =====================
+       Buttons
+       ===================== */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -114,18 +140,24 @@
       cursor: pointer;
       background: linear-gradient(135deg, var(--primary), var(--primary-light));
       color: #ffffff;
-      box-shadow: 0 10px 24px rgba(37,99,235,0.3);
-      transition: transform var(--transition),
-                  box-shadow var(--transition),
-                  opacity var(--transition),
-                  background var(--transition);
+      box-shadow: 0 10px 24px rgba(37,99,235,0.25);
+      transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        opacity var(--transition),
+        background var(--transition),
+        border-color var(--transition);
       white-space: nowrap;
+    }
+
+    .btn i {
+      font-size: 0.9rem;
     }
 
     .btn:hover {
       transform: translateY(-1px);
       box-shadow: 0 16px 32px rgba(37,99,235,0.35);
-      opacity: 0.97;
+      opacity: 0.98;
     }
 
     .btn:active {
@@ -137,7 +169,7 @@
       background: rgba(15,23,42,0.02);
       color: var(--darker);
       border-color: rgba(148,163,184,0.7);
-      box-shadow: 0 10px 20px rgba(15,23,42,0.06);
+      box-shadow: 0 8px 20px rgba(15,23,42,0.06);
     }
 
     .btn-secondary:hover {
@@ -156,7 +188,9 @@
       background: rgba(15,23,42,0.03);
     }
 
-    /* Alerts */
+    /* =====================
+       Alerts (flash messages)
+       ===================== */
     .alert {
       margin-bottom: 14px;
       padding: 10px 12px;
@@ -167,10 +201,16 @@
       gap: 10px;
       align-items: flex-start;
       background: #fff;
+      box-shadow: var(--shadow-sm);
     }
 
     .alert i {
       margin-top: 2px;
+      font-size: 1rem;
+    }
+
+    .alert span {
+      flex: 1;
     }
 
     .alert-success {
@@ -185,7 +225,9 @@
       color: var(--error);
     }
 
-    /* Card & form */
+    /* =====================
+       Card & form container
+       ===================== */
     .job-card {
       background: #ffffff;
       border-radius: var(--radius-lg);
@@ -234,11 +276,15 @@
       .job-page-shell {
         padding: 120px 16px 60px;
       }
+
       .job-form-grid {
         grid-template-columns: 1fr;
       }
     }
 
+    /* =====================
+       Fields
+       ===================== */
     .job-field {
       display: flex;
       flex-direction: column;
@@ -277,6 +323,11 @@
       color: var(--darker);
     }
 
+    .job-input::placeholder,
+    .job-textarea::placeholder {
+      color: rgba(148,163,184,0.9);
+    }
+
     .job-input:focus,
     .job-select:focus,
     .job-textarea:focus {
@@ -288,8 +339,12 @@
     .job-textarea {
       min-height: 130px;
       resize: vertical;
+      line-height: 1.4;
     }
 
+    /* =====================
+       Footer / actions
+       ===================== */
     .job-footer-row {
       display: flex;
       justify-content: space-between;
@@ -303,6 +358,10 @@
       font-size: 0.8rem;
       color: rgba(100,116,139,0.95);
       max-width: 520px;
+    }
+
+    .job-footer-note strong {
+      color: var(--darker);
     }
 
     .job-submit {
@@ -321,14 +380,15 @@
     <header class="job-page-header">
       <div>
         <h1 class="job-page-title">
-          <i class="fa-solid fa-pen-to-square" style="margin-right:8px;color:var(--primary)"></i>
+          <i class="fa-solid fa-pen-to-square"></i>
           Edit job
         </h1>
         <p class="job-page-sub">
-          Update the details of your job posting.
+          Update the details of your job posting so candidates see the latest information.
         </p>
         <p class="job-page-meta">
-          Created {{ job.publishedAt ? job.publishedAt|date('Y-m-d H:i') : '—' }} • ID #{{ job.id }}
+          Created <strong>{{ job.publishedAt ? job.publishedAt|date('Y-m-d H:i') : '—' }}</strong>
+          • ID <strong>#{{ job.id }}</strong>
         </p>
       </div>
       <div class="job-actions">
@@ -336,7 +396,7 @@
           <i class="fa-solid fa-arrow-left"></i>
           Back to My Jobs
         </a>
-        <a href="{{ path('web_dashboard') }}" class="btn">
+        <a href="{{ path('web_dashboard') }}" class="btn btn-ghost">
           <i class="fa-solid fa-gauge-high"></i>
           Dashboard
         </a>
@@ -505,4 +565,3 @@
 
 </body>
 </html>
-

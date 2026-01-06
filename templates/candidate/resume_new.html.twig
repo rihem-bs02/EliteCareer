@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Upload Resume | EliteCareer</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/styles.css">
+
+  <style>
+    body {
+      background: var(--light);
+    }
+
+    .resume-shell {
+      padding: 140px 20px 80px;
+    }
+
+    .resume-inner {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .resume-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      margin-bottom:24px;
+      flex-wrap:wrap;
+    }
+
+    .resume-title {
+      font-family:'Plus Jakarta Sans',sans-serif;
+      font-size:2rem;
+      font-weight:800;
+      color:var(--darker);
+      margin:0 0 4px;
+    }
+
+    .resume-sub {
+      color:var(--gray);
+      font-size:0.95rem;
+      margin:0;
+    }
+
+    .resume-meta {
+      margin-top:6px;
+      font-size:0.82rem;
+      color:rgba(100,116,139,0.95);
+    }
+
+    .resume-actions {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .resume-card {
+      background:#fff;
+      border-radius:var(--radius-lg);
+      border:1px solid var(--gray-light);
+      box-shadow:var(--shadow-lg);
+      padding:24px 22px 22px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .resume-card::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(600px 280px at -10% -10%, rgba(59,130,246,0.12), transparent 55%),
+        radial-gradient(580px 260px at 120% 0%, rgba(236,72,153,0.12), transparent 60%);
+      pointer-events:none;
+      opacity:1;
+    }
+
+    .resume-card-inner {
+      position:relative;
+      z-index:1;
+    }
+
+    .resume-form {
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .resume-field {
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .resume-label-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+    }
+
+    .resume-label {
+      font-size:0.9rem;
+      font-weight:600;
+      color:var(--darker);
+    }
+
+    .resume-hint {
+      font-size:0.78rem;
+      color:rgba(100,116,139,0.9);
+    }
+
+    .resume-input-file {
+      width:100%;
+      border-radius:var(--radius);
+      border:1px dashed rgba(148,163,184,0.8);
+      background:rgba(248,250,252,0.95);
+      padding:14px 12px;
+      font-size:0.9rem;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .resume-input-file span {
+      color:var(--gray);
+    }
+
+    .resume-input-file input[type="file"] {
+      display:none;
+    }
+
+    .resume-footer-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:6px;
+    }
+
+    .resume-note {
+      font-size:0.8rem;
+      color:rgba(100,116,139,0.95);
+    }
+
+    .resume-submit {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .alert-resume {
+      margin-bottom:12px;
+      padding:10px 12px;
+      border-radius:var(--radius);
+      border:1px solid;
+      font-size:0.9rem;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+
+    .alert-resume i {
+      margin-top:2px;
+    }
+
+    .alert-resume--success {
+      background:rgba(16,185,129,0.08);
+      border-color:rgba(16,185,129,0.4);
+      color:var(--success);
+    }
+
+    .alert-resume--error {
+      background:rgba(239,68,68,0.06);
+      border-color:rgba(239,68,68,0.35);
+      color:var(--error);
+    }
+
+    @media (max-width: 768px) {
+      .resume-shell {
+        padding:120px 16px 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<main class="resume-shell">
+  <div class="resume-inner">
+
+    <header class="resume-header">
+      <div>
+        <h1 class="resume-title">
+          <i class="fa-solid fa-file-arrow-up" style="margin-right:8px;color:var(--primary)"></i>
+          Upload resume
+        </h1>
+        <p class="resume-sub">
+          Add your CV so you can apply to jobs in one click.
+        </p>
+        {% if user %}
+          <p class="resume-meta">
+            Logged in as <strong>{{ user.email }}</strong>
+          </p>
+        {% endif %}
+      </div>
+      <div class="resume-actions">
+        <a href="{{ path('web_dashboard') }}" class="btn btn-secondary">
+          <i class="fa-solid fa-gauge-high"></i>
+          Back to dashboard
+        </a>
+      </div>
+    </header>
+
+    {# Flash messages #}
+    {% for msg in app.flashes('success') %}
+      <div class="alert-resume alert-resume--success">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>{{ msg }}</span>
+      </div>
+    {% endfor %}
+
+    {% for msg in app.flashes('error') %}
+      <div class="alert-resume alert-resume--error">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span>{{ msg }}</span>
+      </div>
+    {% endfor %}
+
+    <section class="resume-card">
+      <div class="resume-card-inner">
+
+        <form method="post"
+              action="{{ path('web_candidate_resume_new') }}"
+              enctype="multipart/form-data"
+              class="resume-form">
+
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+
+          <div class="resume-field">
+            <div class="resume-label-row">
+              <label class="resume-label" for="resume_file">Resume file</label>
+              <span class="resume-hint">PDF or Word – max ~5–10 MB</span>
+            </div>
+
+            <label class="resume-input-file">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <i class="fa-solid fa-upload" style="color:var(--primary);"></i>
+                <span id="resume-file-label">Choose a file…</span>
+              </div>
+              <input
+                id="resume_file"
+                name="resume_file"
+                type="file"
+                accept=".pdf,.doc,.docx,application/pdf"
+                required
+                onchange="document.getElementById('resume-file-label').textContent = this.files.length ? this.files[0].name : 'Choose a file…';"
+              >
+            </label>
+          </div>
+
+          <div class="resume-footer-row">
+            <p class="resume-note">
+              Your resume will only be shared with employers when you apply to their jobs.
+            </p>
+            <div class="resume-submit">
+              <button type="submit" class="btn">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                Upload resume
+              </button>
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+    </section>
+
+  </div>
+</main>
+
+</body>
+</html>

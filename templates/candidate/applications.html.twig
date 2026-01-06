@@ -1,0 +1,498 @@
+{# templates/candidate/applications.html.twig #}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>My Applications | EliteCareer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {# Fonts & Icons #}
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #60a5fa;
+      --accent: #ec4899;
+
+      --light: #f1f5f9;
+      --darker: #0f172a;
+      --dark: #020617;
+
+      --gray: #64748b;
+      --gray-dark: #475569;
+      --gray-light: #e2e8f0;
+      --gray-lighter: #f8fafc;
+
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --error: #ef4444;
+
+      --radius: 0.75rem;
+      --radius-lg: 1rem;
+      --apps-radius-lg: 18px;
+
+      --shadow-sm: 0 4px 12px rgba(15,23,42,0.08);
+      --shadow: 0 8px 20px rgba(15,23,42,0.1);
+      --shadow-lg: 0 20px 55px rgba(15,23,42,0.18);
+
+      --transition: 180ms ease;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, #e0f2fe 0, #f9fafb 40%, #f8fafc 100%);
+      color: var(--darker);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ========= Layout ========= */
+    .apps-shell {
+      padding: 140px 20px 80px;
+    }
+
+    .apps-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .apps-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .apps-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: var(--darker);
+      margin: 0 0 4px;
+      letter-spacing: -0.03em;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .apps-title i {
+      color: var(--primary);
+      font-size: 1.4rem;
+    }
+
+    .apps-sub {
+      color: var(--gray);
+      font-size: 0.95rem;
+      margin: 0;
+      max-width: 52rem;
+    }
+
+    .apps-meta {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: rgba(100,116,139,0.95);
+    }
+
+    .apps-meta strong {
+      color: var(--darker);
+    }
+
+    .apps-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    /* ========= Buttons ========= */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #ffffff;
+      box-shadow: 0 10px 24px rgba(37,99,235,0.25);
+      transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        opacity var(--transition),
+        border-color var(--transition),
+        background var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn i {
+      font-size: 0.9rem;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(37,99,235,0.35);
+      opacity: 0.98;
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 18px rgba(30,64,175,0.5);
+    }
+
+    .btn.btn-secondary {
+      background: rgba(15,23,42,0.02);
+      color: var(--darker);
+      border-color: rgba(148,163,184,0.75);
+      box-shadow: 0 8px 20px rgba(15,23,42,0.06);
+    }
+
+    .btn.btn-secondary:hover {
+      background: rgba(15,23,42,0.06);
+      box-shadow: 0 12px 26px rgba(15,23,42,0.12);
+    }
+
+    .btn-ghost {
+      border-radius: 999px;
+      border: 1px dashed rgba(148,163,184,0.7);
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      background: transparent;
+      color: var(--gray);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .btn-ghost:hover {
+      border-style: solid;
+      border-color: var(--primary-light);
+      color: var(--primary);
+      background: rgba(59,130,246,0.04);
+    }
+
+    .auth-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .auth-link:hover {
+      text-decoration: underline;
+    }
+
+    /* ========= Card ========= */
+    .apps-card {
+      background: #ffffff;
+      border-radius: var(--apps-radius-lg);
+      border: 1px solid var(--gray-light);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .apps-card-head {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--gray-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background:
+        radial-gradient(700px 320px at -10% 0%, rgba(59,130,246,0.10), transparent 55%),
+        linear-gradient(180deg, rgba(15,23,42,0.05), transparent);
+    }
+
+    .apps-card-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--darker);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .apps-card-title i {
+      color: var(--primary);
+    }
+
+    .apps-card-count {
+      font-size: 0.82rem;
+      color: var(--gray);
+    }
+
+    /* ========= Table ========= */
+    table.apps-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .apps-table th,
+    .apps-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--gray-lighter);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .apps-table th {
+      background: rgba(248,250,252,0.98);
+      font-weight: 600;
+      color: var(--gray);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .apps-table tbody tr:hover {
+      background: rgba(248,250,252,0.7);
+    }
+
+    .apps-job-title {
+      font-weight: 600;
+      color: var(--darker);
+    }
+
+    .apps-job-meta {
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-top: 4px;
+    }
+
+    .apps-actions-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+      font-size: 0.8rem;
+    }
+
+    /* ========= Status pills ========= */
+    .apps-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      border: 1px solid var(--gray-light);
+      background: rgba(148,163,184,0.10);
+      color: var(--dark);
+      white-space: nowrap;
+    }
+
+    .apps-status-pill i {
+      font-size: 0.5rem;
+    }
+
+    .apps-status-pill--submitted {
+      background: rgba(59,130,246,0.06);
+      border-color: rgba(59,130,246,0.35);
+      color: var(--primary);
+    }
+
+    .apps-status-pill--in-review {
+      background: rgba(234,179,8,0.08);
+      border-color: rgba(234,179,8,0.5);
+      color: #b45309;
+    }
+
+    .apps-status-pill--shortlisted {
+      background: rgba(16,185,129,0.08);
+      border-color: rgba(16,185,129,0.45);
+      color: var(--success);
+    }
+
+    .apps-status-pill--rejected {
+      background: rgba(239,68,68,0.06);
+      border-color: rgba(239,68,68,0.45);
+      color: var(--error);
+    }
+
+    .apps-status-pill--hired {
+      background: rgba(34,197,94,0.10);
+      border-color: rgba(22,163,74,0.5);
+      color: #15803d;
+    }
+
+    .apps-status-pill--withdrawn {
+      background: rgba(148,163,184,0.12);
+      border-color: rgba(148,163,184,0.6);
+      color: var(--gray);
+    }
+
+    /* ========= Empty state ========= */
+    .apps-empty {
+      padding: 22px 20px;
+      font-size: 0.95rem;
+      color: var(--gray-dark);
+    }
+
+    .apps-empty a {
+      font-weight: 600;
+    }
+
+    /* ========= Responsive ========= */
+    @media (max-width: 768px) {
+      .apps-shell {
+        padding: 120px 16px 60px;
+      }
+
+      .apps-header {
+        align-items: flex-start;
+      }
+
+      .apps-table th,
+      .apps-table td {
+        padding: 10px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<main class="apps-shell">
+  <div class="apps-inner">
+
+    <header class="apps-header">
+      <div>
+        <h1 class="apps-title">
+          <i class="fa-solid fa-file-signature"></i>
+          My applications
+        </h1>
+        <p class="apps-sub">
+          Track the jobs you’ve applied to and see where you stand in the process.
+        </p>
+        {% if user %}
+          <p class="apps-meta">
+            Logged in as <strong>{{ user.email }}</strong>
+          </p>
+        {% endif %}
+      </div>
+      <div class="apps-actions">
+        <a href="{{ path('web_jobs_index') }}" class="btn">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          Browse jobs
+        </a>
+        <a href="{{ path('web_dashboard') }}" class="btn btn-secondary">
+          <i class="fa-solid fa-gauge-high"></i>
+          Back to dashboard
+        </a>
+      </div>
+    </header>
+
+    <section class="apps-card">
+      <div class="apps-card-head">
+        <h2 class="apps-card-title">
+          <i class="fa-solid fa-list-check"></i>
+          Applications
+        </h2>
+        <span class="apps-card-count">
+          {{ applications|length }} application{{ applications|length == 1 ? '' : 's' }}
+        </span>
+      </div>
+
+      {% if applications is not empty %}
+        <table class="apps-table">
+          <thead>
+            <tr>
+              <th>Job</th>
+              <th>Status</th>
+              <th>Applied</th>
+              <th>Company</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for app in applications %}
+            {% set job = app.job %}
+            {% set status = app.status|upper %}
+            {# Map status to CSS class #}
+            {% set statusClass =
+              status == 'SUBMITTED'   ? 'apps-status-pill--submitted'  :
+              status == 'IN_REVIEW'   ? 'apps-status-pill--in-review'  :
+              status == 'SHORTLISTED' ? 'apps-status-pill--shortlisted':
+              status == 'REJECTED'    ? 'apps-status-pill--rejected'   :
+              status == 'HIRED'       ? 'apps-status-pill--hired'      :
+              status == 'WITHDRAWN'   ? 'apps-status-pill--withdrawn'  :
+                                        ''
+            %}
+            <tr>
+              <td>
+                {% if job %}
+                  <div class="apps-job-title">
+                    {{ job.title }}
+                  </div>
+                  <div class="apps-job-meta">
+                    {{ job.location|default('Location not specified') }}
+                    {% if job.employmentType %} • {{ job.employmentType }}{% endif %}
+                    {% if job.workMode %} • {{ job.workMode }}{% endif %}
+                  </div>
+                  <div class="apps-actions-row">
+                    <a href="{{ path('web_jobs_show', { id: job.id }) }}" class="btn-ghost">
+                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                      View job
+                    </a>
+                  </div>
+                {% else %}
+                  <span class="apps-job-title">Job no longer available</span>
+                {% endif %}
+              </td>
+              <td>
+                <span class="apps-status-pill {{ statusClass }}">
+                  <i class="fa-solid fa-circle"></i>
+                  {{ status|replace({'_':' '})|title }}
+                </span>
+              </td>
+              <td>
+                {{ app.appliedAt ? app.appliedAt|date('Y-m-d H:i') : '—' }}
+              </td>
+              <td>
+                {% if job and job.company %}
+                  {{ job.company.name }}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="apps-empty">
+          You haven’t applied to any jobs yet.
+          <a href="{{ path('web_jobs_index') }}" class="auth-link">
+            Browse open positions
+          </a>.
+        </div>
+      {% endif %}
+    </section>
+
+  </div>
+</main>
+
+</body>
+</html>
